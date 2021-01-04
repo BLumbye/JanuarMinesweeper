@@ -25,11 +25,12 @@ public class Main extends Application {
 
         Label label1 = new Label("Some text");
         Label label2 = new Label("More text");
+        Label label3 = new Label("More more text");
         Button button = new Button("Wups!");
         button.setOnAction(event -> {
             System.out.println(event);
         });
-        hBox.getChildren().addAll(label1, label2, button);
+        hBox.getChildren().addAll(label1, label2, label3, button);
 
         stackPane.getChildren().add(hBox);
 
