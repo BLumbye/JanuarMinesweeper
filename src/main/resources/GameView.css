@@ -1,0 +1,11 @@
+.label {
+  -fx-font-size: 32px;
+}
+
+.win {
+  -fx-text-fill: #00FF00;
+}
+
+.lose {
+  -fx-text-fill: #FF0000;
+}

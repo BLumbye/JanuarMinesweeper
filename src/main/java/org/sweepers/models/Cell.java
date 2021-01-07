@@ -12,9 +12,11 @@ public abstract class Cell {
         revealed = false;
     }
 
+    public void reveal() {
+        revealed = true;
+    }
+
     public boolean isRevealed() {
         return revealed;
     }
-
-    public abstract boolean onClick();
 }

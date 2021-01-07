@@ -10,15 +10,6 @@ public class Mineless extends Cell {
         neighbors = n;
     }
 
-    /**
-     * This method reveals the cell when it is clicked on
-     * @return this value means that the game goes on
-     */
-    public boolean onClick() {
-        revealed = true;
-        return false;
-    }
-
     public int getNeighbors() {
         return neighbors;
     }

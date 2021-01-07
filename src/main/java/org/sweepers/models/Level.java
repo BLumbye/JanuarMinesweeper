@@ -1,5 +1,6 @@
 package org.sweepers.models;
 
+import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -12,7 +13,21 @@ public class Level {
     private int mines;
     private int revealed;
 
-    public Level(int height, int width, int mines) {
+    public Level(int height, int width, int mines) throws IOException {
+        // Check preconditions
+        if (height < 4 || height > 100 || width < 4 || width > 100) {
+            throw new IOException("Width and height must be between 4 and 100!");
+        }
+
+        if (mines > height * width) {
+            throw new IOException("The number of mines chosen exceeds the amount of cells!");
+        }
+
+        if (mines < 1) {
+            throw new IOException("You are a boring person, there has to be mines in \"MINE\"Sweeper!");
+        }
+        
+        // Initialize
         this.height = height;
         this.width = width;
         this.mines = mines;
@@ -30,14 +45,26 @@ public class Level {
     public boolean onClick(int x, int y) {
         if (!level[y][x].isRevealed()) {
             revealed++;
-            return level[y][x].onClick();
-        } else {
-            return false;
+            level[y][x].reveal();
+            return level[y][x] instanceof Mine;
         }
+        return false;
     }
 
     public Cell[][] getLevel(){
         return level;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public boolean gameWon() {
+        return revealed + mines == width * height;
     }
 
     /**

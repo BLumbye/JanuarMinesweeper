@@ -16,22 +16,22 @@ import org.sweepers.models.Mineless;
  */
 public class GameView {
     public static final Color[] numberColors = {Color.BLUE, Color.GREEN, Color.RED, Color.PURPLE, Color.MAROON, Color.TURQUOISE, Color.BLACK, Color.GRAY};
-    GraphicsContext gcLower;
-    GraphicsContext gcMiddle;
-    GraphicsContext gcUpper;
+    private GraphicsContext gcLower, gcMiddle, gcUpper;
+    private int cellWidth, cellHeight;
+    private double ratio;
 
-    public GameView(GraphicsContext gcLower, GraphicsContext gcMiddle, GraphicsContext gcUpper) {
+    public GameView(GraphicsContext gcLower, GraphicsContext gcMiddle, GraphicsContext gcUpper, int cellWidth, int cellHeight, double ratio) {
         this.gcLower = gcLower;
         this.gcMiddle = gcMiddle;
         this.gcUpper = gcUpper;
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
+        this.ratio = ratio;
     }
 
     public void drawLevel(Cell[][] level, int height, int width) {
-        int cellHeight = height / level.length;
-        int cellWidth = width / level[0].length;
-
         Image bombImage = new Image("/bomb.png");
-        gcLower.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        gcLower.setFont(Font.font("Arial", FontWeight.BOLD, 24 * ratio));
 
         // Draw lower layer - mines and numbers
         for (int y = 0; y < level.length; y++) {
@@ -51,22 +51,27 @@ public class GameView {
             }
         }
 
-        /*// Draw middle layer
+        // Draw middle layer
         gcMiddle.setFill(Color.GREY);
-        gcMiddle.fillRect(0,0, height , width);
+        gcMiddle.fillRect(0,0, width, height);
 
 
         // Draw Upper layer
         gcUpper.setStroke(Color.BLACK);
-        gcUpper.setLineWidth(2);
+        gcUpper.setLineWidth(2 * ratio);
         for (int y = 0; y <= height; y += cellHeight){
             gcUpper.strokeLine(0, y, width, y);
         }
         for (int x = 0; x <= width; x += cellWidth) {
             gcUpper.strokeLine(x, 0, x, height);
-        }*/
+        }
+    }
 
+    public void revealCell(int x, int y) {
+        gcMiddle.clearRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+    }
 
-
+    public void revealAll() {
+        gcMiddle.clearRect(0, 0, gcMiddle.getCanvas().getWidth(), gcMiddle.getCanvas().getHeight());
     }
 }
