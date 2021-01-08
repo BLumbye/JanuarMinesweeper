@@ -1,7 +1,5 @@
 package org.sweepers.control;
 
-import java.net.URISyntaxException;
-
 import org.sweepers.models.Level;
 import org.sweepers.view.GameView;
 
@@ -9,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.media.AudioClip;
 import javafx.stage.Screen;
 
 //
