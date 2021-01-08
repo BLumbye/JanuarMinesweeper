@@ -140,3 +140,7 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
+
+# VSCode
+.vscode/
+
