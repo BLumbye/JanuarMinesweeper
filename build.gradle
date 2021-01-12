@@ -12,6 +12,15 @@ repositories {
 }
 
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+reporting.baseDir = "my-reports"
+testResultsDirName = "$buildDir/my-test-results"
+
+test {
+    useJUnitPlatform()
 }
 
 application {
@@ -29,5 +38,12 @@ jar {
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task showDirs {
+    doLast {
+        logger.quiet(rootDir.toPath().relativize(project.reportsDir.toPath()).toString())
+        logger.quiet(rootDir.toPath().relativize(project.testResultsDir.toPath()).toString())
     }
 }

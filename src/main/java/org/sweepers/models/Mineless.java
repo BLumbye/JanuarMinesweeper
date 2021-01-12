@@ -1,4 +1,5 @@
 package org.sweepers.models;
+
 /**
  * This class defines the cells that don't contain mines.
  */

@@ -9,7 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Screen;
 
-//
+/**
+ * The controller handling the game part
+ */
 public class GameController {
     private static final int PREFFERED_CELL_SIZE = 32;
 
