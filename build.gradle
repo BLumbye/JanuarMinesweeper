@@ -20,7 +20,10 @@ reporting.baseDir = "my-reports"
 testResultsDirName = "$buildDir/my-test-results"
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform() {
+        // includeTags 'Sick'
+        // excludeTags 'Slow'
+    }
 }
 
 application {

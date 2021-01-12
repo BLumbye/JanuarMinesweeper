@@ -19,4 +19,12 @@ public abstract class Cell {
     public boolean isRevealed() {
         return revealed;
     }
+
+    public int getX(){
+        return x;
+    }
+
+    public int getY(){
+        return y;
+    }
 }

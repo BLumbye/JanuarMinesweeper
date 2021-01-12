@@ -1,10 +1,15 @@
 package org.sweepers.models;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import javafx.util.Pair;
+
 /**
- * This class contains a 2D array of cells and methods that describes a level of minesweeper.
+ * This class contains a 2D array of cells and methods that describes a level of
+ * minesweeper.
  */
 public class Level {
     private Cell[][] level;
@@ -13,20 +18,20 @@ public class Level {
     private int mines;
     private int revealed;
 
-    public Level(int height, int width, int mines) throws IOException {
+    public Level(int height, int width, int mines) throws IllegalArgumentException {
         // Check preconditions
         if (height < 4 || height > 100 || width < 4 || width > 100) {
-            throw new IOException("Width and height must be between 4 and 100!");
+            throw new IllegalArgumentException("Width and height must be between 4 and 100!");
         }
 
-        if (mines > height * width) {
-            throw new IOException("The number of mines chosen exceeds the amount of cells!");
+        if (mines >= height * width) {
+            throw new IllegalArgumentException("The number of mines chosen exceeds the amount of cells!");
         }
 
         if (mines < 1) {
-            throw new IOException("You are a boring person, there has to be mines in \"MINE\"Sweeper!");
+            throw new IllegalArgumentException("You are a boring person, there has to be mines in \"MINE\"Sweeper!");
         }
-        
+
         // Initialize
         this.height = height;
         this.width = width;
@@ -38,9 +43,11 @@ public class Level {
 
     /**
      * A handler for clicking on a cell in the level.
+     * 
      * @param x the x-coordinate
      * @param y the y-coordinate
-     * @return This boolean defines whether the game continues or if the player lost by clicking on a mine (true = game over)
+     * @return This boolean defines whether the game continues or if the player lost
+     *         by clicking on a mine (true = game over)
      */
     public boolean onClick(int x, int y) {
         if (!level[y][x].isRevealed()) {
@@ -51,16 +58,20 @@ public class Level {
         return false;
     }
 
-    public Cell[][] getLevel(){
+    public Cell[][] getLevel() {
         return level;
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return height;
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return width;
+    }
+
+    public int getMines() {
+        return mines;
     }
 
     public boolean gameWon() {
@@ -71,16 +82,21 @@ public class Level {
      * This method helps the constructor by placing cells with and without mines
      */
     private void generateLevel() {
+        // Populate valid spots
+        List<Pair<Integer,Integer>> validSpots = new ArrayList<>();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+               validSpots.add(new Pair<Integer,Integer>(x, y));
+            }
+        }
+
         // Places mines
         Random rand = new Random();
         for (int i = 0; i < mines; i++) {
-            int x = rand.nextInt(width);
-            int y = rand.nextInt(height);
-            if (level[y][x] == null) {
-                level[y][x] = new Mine(x, y);
-            } else {
-                i--;
-            }
+            int index = rand.nextInt(validSpots.size());
+            Pair<Integer,Integer> spot = validSpots.get(index);
+            level[spot.getValue()][spot.getKey()] = new Mine(spot.getKey(), spot.getValue());
+            validSpots.remove(index);
         }
 
         // Places mineless cells
@@ -95,6 +111,7 @@ public class Level {
 
     /**
      * Counts the amount of neighbors that are mines (includes diagonals).
+     * 
      * @param x the x-coordinate
      * @param y the y-coordinate
      * @return the number of neighbor cells that contains mines
