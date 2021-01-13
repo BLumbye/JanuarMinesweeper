@@ -6,8 +6,10 @@ import org.sweepers.view.GameView;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Screen;
+import javafx.util.Pair;
 
 /**
  * The controller handling the game part
@@ -25,6 +27,9 @@ public class GameController {
     private Canvas canvasUpper;
 
     @FXML
+    private Canvas canvasFlag;
+
+    @FXML
     private Label txtOverlay;
 
     // Model
@@ -32,7 +37,8 @@ public class GameController {
 
     private GameView gameView;
     private int cellWidth, cellHeight;
-    private boolean gameInProgress;
+    private int canvasWidth, canvasHeight;
+    private boolean gameInProgress = true;
 
     public GameController(Level level) {
         this.level = level;
@@ -42,8 +48,8 @@ public class GameController {
     private void initialize() {
         int screenWidth = (int) Screen.getPrimary().getBounds().getWidth() - 100;
         int screenHeight = (int) Screen.getPrimary().getBounds().getHeight() - 200;
-        int canvasWidth = level.getWidth() * PREFFERED_CELL_SIZE;
-        int canvasHeight = level.getHeight() * PREFFERED_CELL_SIZE;
+        canvasWidth = level.getWidth() * PREFFERED_CELL_SIZE;
+        canvasHeight = level.getHeight() * PREFFERED_CELL_SIZE;
 
         double ratio = 1;
         if (canvasWidth > screenWidth || canvasHeight > screenHeight) {
@@ -60,20 +66,34 @@ public class GameController {
         canvasMiddle.setHeight(canvasHeight);
         canvasUpper.setWidth(canvasWidth);
         canvasUpper.setHeight(canvasHeight);
+        canvasFlag.setWidth(canvasWidth);
+        canvasFlag.setHeight(canvasHeight);
 
         cellHeight = canvasHeight / level.getHeight();
         cellWidth = canvasWidth / level.getWidth();
 
         // Draw level
         gameView = new GameView(canvasLower.getGraphicsContext2D(), canvasMiddle.getGraphicsContext2D(),
-                canvasUpper.getGraphicsContext2D(), cellWidth, cellHeight, ratio);
-        gameView.drawLevel(level.getLevel(), canvasHeight, canvasWidth);
+                canvasUpper.getGraphicsContext2D(), canvasFlag.getGraphicsContext2D(), cellWidth, cellHeight, ratio);
+        gameView.drawGridOverlay(canvasHeight, canvasWidth);
 
-        canvasUpper.addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
-        gameInProgress = true;
+        // Add listeners to level and the mineless cells
+        level.addCellListener(gameView::onCellUpdate);
+        // level.addPropertyChangeListener("gameInProgress", gameView);
+        
+        
+        canvasFlag.addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
     }
 
     private void mouseClicked(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            leftMouseClicked(event);
+        } else if (event.getButton() == MouseButton.SECONDARY) {
+            rightMouseClicked(event);
+        }
+    }
+
+    private void leftMouseClicked(MouseEvent event) {
         if (!gameInProgress)
             return;
 
@@ -81,13 +101,40 @@ public class GameController {
         double mouseY = event.getY();
         int x = Math.floorDiv((int) mouseX, cellWidth);
         int y = Math.floorDiv((int) mouseY, cellHeight);
+
+        if (!level.isInitialized()) {
+            level.generateLevel(new Pair<Integer,Integer>(x, y));
+            gameView.drawCells(level.getLevel(), canvasHeight, canvasWidth);
+        }
+
+        if (level.getLevel()[y][x].isFlagged()){
+            return;
+        }
+        
         if (level.onClick(x, y)) {
             lose();
         }
-        gameView.revealCell(x, y);
+        
         if (level.gameWon()) {
             win();
         }
+    }
+
+    private void rightMouseClicked(MouseEvent event) {
+        if (!gameInProgress)
+            return;
+
+        double mouseX = event.getX();
+        double mouseY = event.getY();
+        int x = Math.floorDiv((int) mouseX, cellWidth);
+        int y = Math.floorDiv((int) mouseY, cellHeight);
+
+        if (!level.isInitialized()) {
+            level.generateLevel();
+            gameView.drawCells(level.getLevel(), canvasHeight, canvasWidth);
+        }
+            
+        level.flag(x, y);
     }
 
     private void win() {

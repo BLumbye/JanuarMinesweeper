@@ -13,6 +13,7 @@
               <Canvas fx:id="canvasLower" />
               <Canvas fx:id="canvasMiddle" />
               <Canvas fx:id="canvasUpper" />
+              <Canvas fx:id="canvasFlag" />
           </children>
       </StackPane>
    </center>

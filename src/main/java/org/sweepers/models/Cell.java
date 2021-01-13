@@ -1,15 +1,19 @@
 package org.sweepers.models;
+
 /**
- * This is an abstract class that is inherited by the cells with and without mines
+ * This is an abstract class that is inherited by the cells with and without
+ * mines
  */
-public abstract class Cell {
+public abstract class Cell implements Cloneable {
     protected int x, y;
     protected boolean revealed;
+    protected boolean flagged;
 
-    public Cell(int x, int y){
+    public Cell(int x, int y) {
         this.x = x;
         this.y = y;
         revealed = false;
+        flagged = false;
     }
 
     public void reveal() {
@@ -20,11 +24,28 @@ public abstract class Cell {
         return revealed;
     }
 
-    public int getX(){
+    public boolean isFlagged() {
+        return flagged;
+    }
+
+    public int getX() {
         return x;
     }
 
-    public int getY(){
+    public int getY() {
         return y;
+    }
+
+    public void toggleFlagged() {
+        flagged = !flagged;
+    }
+
+    protected Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
