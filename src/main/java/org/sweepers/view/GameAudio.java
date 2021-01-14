@@ -11,8 +11,8 @@ public class GameAudio {
 
     Media sound = new Media("explosion.mp3");
     MediaPlayer mediaPlayer = new MediaPlayer(sound);
+    
     //Empty constructor
-
     public GameAudio()
     {
     }

@@ -1,0 +1,12 @@
+.panel {
+  -fx-background-color: rgba(0,0,0,0.2);
+  -fx-padding: 0 12px;
+}
+
+.button-marker {
+  visibility: hidden;
+}
+
+.selected .button-marker {
+  visibility: visible;
+}

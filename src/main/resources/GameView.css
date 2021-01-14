@@ -1,11 +1,7 @@
-.label {
-  -fx-font-size: 32px;
-}
-
 .win {
-  -fx-text-fill: #00FF00;
+  -fx-fill: linear-gradient(to bottom right, rgb(255,0,0) 10%, rgb(255, 166, 0) 20%, rgb(16,255,0) 30%, rgb(0,255,255) 50%, rgb(61,63,239) 64%, rgb(154,0,255) 77%, rgb(255,0,226) 85%, rgb(253,45,45) 100%);
 }
 
 .lose {
-  -fx-text-fill: #FF0000;
+  -fx-fill: #FF0000;
 }

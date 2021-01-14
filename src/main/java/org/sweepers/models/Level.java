@@ -1,42 +1,41 @@
 package org.sweepers.models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 /**
  * This class contains a 2D array of cells and methods that describes a level of
  * minesweeper.
  */
 public class Level {
-    private PropertyChangeSupport support;
+    /** y first - x second */
     private Cell[][] level;
     private int height;
     private int width;
-    private int mines;
+    private IntegerProperty mines;
     private int revealed;
-    private int flagged;
+    private IntegerProperty flagged;
     private boolean initialized;
+    private long startTime;
 
-    private List<BiConsumer<Cell,Cell>> cellListeners;
+    private List<BiConsumer<Cell, Cell>> cellListeners;
 
     public Level(int height, int width, int mines) throws IllegalArgumentException {
-        // Make support and add listener
-        support = new PropertyChangeSupport(this);
 
         // Check preconditions
         if (height < 4 || height > 100 || width < 4 || width > 100) {
             throw new IllegalArgumentException("Width and height must be between 4 and 100!");
         }
 
-        if (mines >= height * width) {
+        // Max mines is subtracted by 9 because of the "free start"
+        if (mines >= height * width - 9) {
             throw new IllegalArgumentException("The number of mines chosen exceeds the amount of cells!");
         }
 
@@ -47,15 +46,15 @@ public class Level {
         // Initialize
         this.height = height;
         this.width = width;
-        this.mines = mines;
+        this.mines = new SimpleIntegerProperty(mines);
         level = new Cell[this.height][this.width];
         revealed = 0;
-        flagged = 0;
+        flagged = new SimpleIntegerProperty(0);
         initialized = false;
         cellListeners = new ArrayList<>();
     }
 
-    public void addCellListener(BiConsumer<Cell,Cell> func) {
+    public void addCellListener(BiConsumer<Cell, Cell> func) {
         cellListeners.add(func);
     }
 
@@ -78,7 +77,9 @@ public class Level {
             if ((level[y][x] instanceof Mineless && ((Mineless) level[y][x]).getNeighbors() == 0)) {
                 for (int i = Math.max(y - 1, 0); i <= Math.min(y + 1, height - 1); i++) {
                     for (int j = Math.max(x - 1, 0); j <= Math.min(x + 1, width - 1); j++) {
-                        onClick(j, i);
+                        if (!level[i][j].isFlagged()) {
+                            onClick(j, i);
+                        }
                     }
                 }
             }
@@ -93,8 +94,10 @@ public class Level {
     }
 
     public void flag(int x, int y) {
+        if(!level[y][x].isFlagged() && flagged.get() >= 9999) return;
+        
         Cell oldCell = (Cell) level[y][x].clone();
-        level[y][x].toggleFlagged();
+        flagged.set(flagged.get() + (level[y][x].toggleFlagged() ? 1 : -1));
 
         cellListeners.forEach(listener -> {
             listener.accept(oldCell, level[y][x]);
@@ -113,7 +116,7 @@ public class Level {
         return width;
     }
 
-    public int getMines() {
+    public IntegerProperty getMines() {
         return mines;
     }
 
@@ -121,16 +124,16 @@ public class Level {
         return initialized;
     }
 
+    public IntegerProperty getFlagged() {
+        return flagged;
+    }
+
+    public long getElapsedTime() {
+        return System.currentTimeMillis() - startTime;
+    }
+
     public boolean gameWon() {
-        return revealed + mines == width * height;
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener pcl) {
-        support.addPropertyChangeListener(pcl);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener pcl) {
-        support.removePropertyChangeListener(pcl);
+        return revealed + mines.get() == width * height && !Arrays.stream(level).flatMap(Arrays::stream).anyMatch(c -> c instanceof Mine && c.isRevealed());
     }
 
     public void generateLevel(Pair<Integer, Integer> startPosition) {
@@ -141,11 +144,14 @@ public class Level {
                 validSpots.add(new Pair<Integer, Integer>(x, y));
             }
         }
-        
-        // Remove startPosition from valid spots
-        for (int i = 0; i < validSpots.size(); i++) {
-            if (startPosition.equals(validSpots.get(i))) {
-                validSpots.remove(i);
+
+        // TODO: Write test for this
+        // Remove startPosition and fields around from valid spots
+        for (int i = Math.max(startPosition.getValue() - 1, 0); i <= Math.min(startPosition.getValue() + 1,
+                height - 1); i++) {
+            for (int j = Math.max(startPosition.getKey() - 1, 0); j <= Math.min(startPosition.getKey() + 1,
+                    width - 1); j++) {
+                validSpots.remove(new Pair<Integer, Integer>(j, i));
             }
         }
 
@@ -169,10 +175,11 @@ public class Level {
      */
     private void generateLevel(List<Pair<Integer, Integer>> validSpots) {
         initialized = true;
+        startTime = System.currentTimeMillis();
 
         // Places mines
         Random rand = new Random();
-        for (int i = 0; i < mines; i++) {
+        for (int i = 0; i < mines.get(); i++) {
             int index = rand.nextInt(validSpots.size());
             Pair<Integer, Integer> spot = validSpots.get(index);
             level[spot.getValue()][spot.getKey()] = new Mine(spot.getKey(), spot.getValue());

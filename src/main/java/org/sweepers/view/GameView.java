@@ -11,10 +11,6 @@ import org.sweepers.models.Cell;
 import org.sweepers.models.Mine;
 import org.sweepers.models.Mineless;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-
 /**
  * This class visualizes the game itself
  */
@@ -77,24 +73,6 @@ public class GameView {
             gcGrid.strokeLine(x, 0, x, height);
         }
     }
-
-/*
-    public void propertyChange(PropertyChangeEvent evt) {
-        //gameInProgress
-        if ("gameInProgress".equals(evt.getPropertyName()){
-            revealAll();
-        }
-        //Cells
-        //revealed
-        else if ("revealed".equals(evt.getPropertyName()){
-            
-        }
-        //flagged
-        else if ("flagged".equals(evt.getPropertyName()){
-
-        }
-    }
-*/
 
     public void onCellUpdate(Cell oldCell, Cell newCell) {
         if (!oldCell.isRevealed() && newCell.isRevealed()) {

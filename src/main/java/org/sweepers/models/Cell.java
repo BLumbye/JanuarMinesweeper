@@ -36,8 +36,8 @@ public abstract class Cell implements Cloneable {
         return y;
     }
 
-    public void toggleFlagged() {
-        flagged = !flagged;
+    public boolean toggleFlagged() {
+        return flagged = !flagged;
     }
 
     protected Object clone() {
