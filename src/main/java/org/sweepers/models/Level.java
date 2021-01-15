@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
 
@@ -22,8 +24,10 @@ public class Level {
     private IntegerProperty mines;
     private int revealed;
     private IntegerProperty flagged;
-    private boolean initialized;
+    private BooleanProperty initialized;
+    private boolean inProgress;
     private long startTime;
+    private long totalTime;
 
     private List<BiConsumer<Cell, Cell>> cellListeners;
 
@@ -50,10 +54,14 @@ public class Level {
         level = new Cell[this.height][this.width];
         revealed = 0;
         flagged = new SimpleIntegerProperty(0);
-        initialized = false;
+        initialized = new SimpleBooleanProperty(false);
         cellListeners = new ArrayList<>();
+        inProgress = true;
     }
 
+    /**
+     * Add a listener, that gets called when a cell is updated.
+     */
     public void addCellListener(BiConsumer<Cell, Cell> func) {
         cellListeners.add(func);
     }
@@ -104,38 +112,65 @@ public class Level {
         });
     }
 
-    public Cell[][] getLevel() {
-        return level;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public IntegerProperty getMines() {
-        return mines;
-    }
-
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    public IntegerProperty getFlagged() {
-        return flagged;
-    }
-
-    public long getElapsedTime() {
-        return System.currentTimeMillis() - startTime;
-    }
-
+    /**
+     * Returns if the player has won the game. Checks that the correct number of cells are revealed, and that no mines are revealed.
+     */
     public boolean gameWon() {
         return revealed + mines.get() == width * height && !Arrays.stream(level).flatMap(Arrays::stream).anyMatch(c -> c instanceof Mine && c.isRevealed());
     }
 
+    /**
+     * Saves the time and sets inProgress to false.
+     */
+    public void stop() {
+        totalTime = getElapsedTime();
+        inProgress = false;
+    }
+
+    /**
+     * Counts the amount of neighbors that are mines (includes diagonals).
+     * 
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return the number of neighbor cells that contains mines
+     */
+    public int countNeighbors(int x, int y) {
+        int count = 0;
+        for (int i = Math.max(y - 1, 0); i <= Math.min(y + 1, height - 1); i++) {
+            for (int j = Math.max(x - 1, 0); j <= Math.min(x + 1, width - 1); j++) {
+                if (level[i][j] instanceof Mine) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    //#region Generate level methods
+    /**
+     * Starts the game with a predefined level. Only used for testing.
+     * @param level the predefined level
+     */
+    public void generateTestLevel(Cell[][] lvl) {
+        level = lvl;
+
+        // Places mineless cells
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                if (level[y][x] == null) {
+                    level[y][x] = new Mineless(x, y, countNeighbors(x, y));
+                }
+            }
+        }
+
+        initialized.set(true);
+        startTime = System.currentTimeMillis();
+    }
+
+    /**
+     * This public generateLevel method is used to generate a level with a free start.
+     * The free start ensures that there are no mines on the startPosition and the 8 sorrounding cells.
+     */
     public void generateLevel(Pair<Integer, Integer> startPosition) {
         // Populate valid spots
         List<Pair<Integer, Integer>> validSpots = new ArrayList<>();
@@ -158,6 +193,9 @@ public class Level {
         generateLevel(validSpots);
     }
 
+    /**
+     * This public generateLevel method is used to generate a level without a free start.
+     */
     public void generateLevel() {
         // Populate valid spots
         List<Pair<Integer, Integer>> validSpots = new ArrayList<>();
@@ -174,9 +212,6 @@ public class Level {
      * This method helps the constructor by placing cells with and without mines
      */
     private void generateLevel(List<Pair<Integer, Integer>> validSpots) {
-        initialized = true;
-        startTime = System.currentTimeMillis();
-
         // Places mines
         Random rand = new Random();
         for (int i = 0; i < mines.get(); i++) {
@@ -194,24 +229,43 @@ public class Level {
                 }
             }
         }
+
+        initialized.set(true);
+        startTime = System.currentTimeMillis();
+    }
+    //#endregion
+
+    //#region Getters and setters
+    public Cell[][] getLevel() {
+        return level;
     }
 
-    /**
-     * Counts the amount of neighbors that are mines (includes diagonals).
-     * 
-     * @param x the x-coordinate
-     * @param y the y-coordinate
-     * @return the number of neighbor cells that contains mines
-     */
-    private int countNeighbors(int x, int y) {
-        int count = 0;
-        for (int i = Math.max(y - 1, 0); i <= Math.min(y + 1, height - 1); i++) {
-            for (int j = Math.max(x - 1, 0); j <= Math.min(x + 1, width - 1); j++) {
-                if (level[i][j] instanceof Mine) {
-                    count++;
-                }
-            }
-        }
-        return count;
+    public int getHeight() {
+        return height;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public IntegerProperty getMines() {
+        return mines;
+    }
+
+    public BooleanProperty isInitialized() {
+        return initialized;
+    }
+
+    public boolean isInProgress() {
+        return inProgress;
+    }
+
+    public IntegerProperty getFlagged() {
+        return flagged;
+    }
+
+    public long getElapsedTime() {
+        return System.currentTimeMillis() - startTime;
+    }
+    //#endregion
 }

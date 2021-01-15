@@ -6,6 +6,7 @@ import org.sweepers.view.GameView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -63,7 +64,6 @@ public class GameController {
     private int cellWidth, cellHeight;
     private int canvasWidth, canvasHeight;
     private Timeline timerTimeline;
-    private boolean gameInProgress = true;
 
     public GameController(Level level) {
         this.level = level;
@@ -71,6 +71,31 @@ public class GameController {
 
     @FXML
     private void initialize() {
+        double ratio = resizeGame();
+
+        // Draw level
+        gameView = new GameView(canvasLower.getGraphicsContext2D(), canvasMiddle.getGraphicsContext2D(),
+                canvasUpper.getGraphicsContext2D(), canvasFlag.getGraphicsContext2D(), cellWidth, cellHeight, ratio);
+        gameView.drawGridAndOverlay(canvasHeight, canvasWidth);
+
+        // Add listeners to level and the mineless cells
+        level.addCellListener(gameView::onCellUpdate);
+        level.isInitialized().addListener((c, arg1, arg2) -> { start(); });
+        start();
+        
+        canvasFlag.addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
+
+        initializeStatusBar();
+    }
+
+    private void start() {
+        if (!level.isInitialized().getValue()) return;
+        
+        gameView.drawCells(level.getLevel(), canvasHeight, canvasWidth);
+        startTimer();
+    }
+
+    private double resizeGame() {
         int screenWidth = (int) Screen.getPrimary().getBounds().getWidth() - 100;
         int screenHeight = (int) Screen.getPrimary().getBounds().getHeight() - 200;
         canvasWidth = level.getWidth() * PREFFERED_CELL_SIZE;
@@ -96,18 +121,7 @@ public class GameController {
 
         cellHeight = canvasHeight / level.getHeight();
         cellWidth = canvasWidth / level.getWidth();
-
-        // Draw level
-        gameView = new GameView(canvasLower.getGraphicsContext2D(), canvasMiddle.getGraphicsContext2D(),
-                canvasUpper.getGraphicsContext2D(), canvasFlag.getGraphicsContext2D(), cellWidth, cellHeight, ratio);
-        gameView.drawGridOverlay(canvasHeight, canvasWidth);
-
-        // Add listeners to level and the mineless cells
-        level.addCellListener(gameView::onCellUpdate);
-        
-        canvasFlag.addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
-
-        initializeStatusBar();
+        return ratio;
     }
 
     private void initializeStatusBar() {
@@ -161,7 +175,7 @@ public class GameController {
     }
 
     private void leftMouseClicked(MouseEvent event) {
-        if (!gameInProgress)
+        if (!level.isInProgress())
             return;
 
         double mouseX = event.getX();
@@ -169,10 +183,8 @@ public class GameController {
         int x = Math.floorDiv((int) mouseX, cellWidth);
         int y = Math.floorDiv((int) mouseY, cellHeight);
 
-        if (!level.isInitialized()) {
+        if (!level.isInitialized().get()) {
             level.generateLevel(new Pair<Integer,Integer>(x, y));
-            startTimer();
-            gameView.drawCells(level.getLevel(), canvasHeight, canvasWidth);
         }
 
         if (level.getLevel()[y][x].isFlagged()){
@@ -189,7 +201,7 @@ public class GameController {
     }
 
     private void rightMouseClicked(MouseEvent event) {
-        if (!gameInProgress)
+        if (!level.isInProgress())
             return;
 
         double mouseX = event.getX();
@@ -197,10 +209,8 @@ public class GameController {
         int x = Math.floorDiv((int) mouseX, cellWidth);
         int y = Math.floorDiv((int) mouseY, cellHeight);
 
-        if (!level.isInitialized()) {
+        if (!level.isInitialized().get()) {
             level.generateLevel();
-            startTimer();
-            gameView.drawCells(level.getLevel(), canvasHeight, canvasWidth);
         }
         if (!level.getLevel()[y][x].isRevealed())    
         level.flag(x, y);
@@ -221,7 +231,7 @@ public class GameController {
     private void end() {
         stopTimer();
         gameView.revealAll();
-        gameInProgress = false;
+        level.stop();
         boxEnd.setVisible(true);
     }
 }

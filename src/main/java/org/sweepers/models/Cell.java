@@ -20,6 +20,20 @@ public abstract class Cell implements Cloneable {
         revealed = true;
     }
 
+    public boolean toggleFlagged() {
+        return flagged = !flagged;
+    }
+
+    protected Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //#region Getters and setters
     public boolean isRevealed() {
         return revealed;
     }
@@ -35,17 +49,5 @@ public abstract class Cell implements Cloneable {
     public int getY() {
         return y;
     }
-
-    public boolean toggleFlagged() {
-        return flagged = !flagged;
-    }
-
-    protected Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    //#endregion
 }

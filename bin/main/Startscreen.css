@@ -1,6 +1,8 @@
 .panel {
   -fx-background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0,0,0,0.2);
   -fx-padding: 0 12px;
+  padding: 0 12px;
 }
 
 .button-marker {

@@ -15,11 +15,12 @@ public class LevelTest {
   public void testValidConstructor() {
     for (int width = 4; width <= 25; width++) {
       for (int height = 4; height <= 25; height++) {
-        for (int mines = 1; mines < width * height; mines++) {
+        for (int mines = 1; mines < width * height - 10; mines++) {
           Level level = new Level(height, width, mines);
+          level.generateLevel();
           assertEquals(width, level.getWidth());
           assertEquals(height, level.getHeight());
-          assertEquals(mines, level.getMines());
+          assertEquals(mines, level.getMines().get());
           assertEquals(mines, Arrays.stream(level.getLevel()).flatMap(Arrays::stream).filter(c -> c instanceof Mine).count());
           assertEquals(width * height - mines, Arrays.stream(level.getLevel()).flatMap(Arrays::stream).filter(c -> c instanceof Mineless).count());
         }
@@ -28,11 +29,12 @@ public class LevelTest {
 
     for (int width = 99; width <= 100; width++) {
       for (int height = 99; height <= 100; height++) {
-        for (int mines = 5000; mines < width * height; mines++) {
+        for (int mines = 5000; mines < width * height - 10; mines++) {
           Level level = new Level(height, width, mines);
+          level.generateLevel();
           assertEquals(width, level.getWidth());
           assertEquals(height, level.getHeight());
-          assertEquals(mines, level.getMines());
+          assertEquals(mines, level.getMines().get());
         }
       }
     }
