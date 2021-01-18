@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class DisplayTest {
     @Start
     private void start(Stage stage) throws IOException {
-        Level level = new Level(9, 9, 1);
+        Level level = new Level(9, 9, 1, null, null);
         level.generateTestLevel(createTestLevel());
         GameController gameController = new GameController(level);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/GameView.fxml"));

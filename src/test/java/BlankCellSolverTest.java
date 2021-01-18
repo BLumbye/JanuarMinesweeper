@@ -8,7 +8,7 @@ import org.sweepers.models.Mine;
 public class BlankCellSolverTest {
     @Test
     public void testBlankCellSolver() {
-        Level level = new Level(9, 9, 1);
+        Level level = new Level(9, 9, 1, null, null);
         level.generateTestLevel(createTestLevel());
         for (int i = 0; i < 9; i++) {
             level.flag(i, 6);

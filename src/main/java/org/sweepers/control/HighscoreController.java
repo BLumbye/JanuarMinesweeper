@@ -2,7 +2,6 @@ package org.sweepers.control;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.sweepers.Highscores;
@@ -33,7 +32,7 @@ public class HighscoreController {
 
     public HighscoreController() {
         labels = new HBox[5];
-        highscores = highscores.getInstance();
+        highscores = Highscores.getInstance();
     }
 
     @FXML

@@ -18,7 +18,7 @@ import javafx.util.Pair;
 @ExtendWith(ApplicationExtension.class)
 public class StartscreenTest {
     @Start
-    public void start(Stage stage) throws IOException {
+    void start(Stage stage) throws IOException {
         StartscreenController startscreenController = new StartscreenController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Startscreen.fxml"));
         loader.setController(startscreenController);
@@ -29,41 +29,41 @@ public class StartscreenTest {
     }
 
     @Test
-    public void testSizeButtons(FxRobot robot) throws InterruptedException {
-        double percentage = StartscreenController.DIFFICULTIES.get("EASY");
+    void testSizeButtons(FxRobot robot) throws InterruptedException {
+        double percentage = StartscreenController.DIFFICULTIES.get("Easy");
 
         robot.clickOn("#btnSizeSmall");
-        Pair<Integer,Integer> size = StartscreenController.SIZES.get("SMALL");
+        Pair<Integer,Integer> size = StartscreenController.SIZES.get("Small");
         Assertions.assertThat(robot.lookup("#fieldWidth").queryAs(TextField.class).getText()).isEqualTo(size.getKey().toString());
         Assertions.assertThat(robot.lookup("#fieldHeight").queryAs(TextField.class).getText()).isEqualTo(size.getValue().toString());
         Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(size.getKey() * size.getValue() * percentage)));
 
         robot.clickOn("#btnSizeMedium");
-        size = StartscreenController.SIZES.get("MEDIUM");
+        size = StartscreenController.SIZES.get("Medium");
         Assertions.assertThat(robot.lookup("#fieldWidth").queryAs(TextField.class).getText()).isEqualTo(size.getKey().toString());
         Assertions.assertThat(robot.lookup("#fieldHeight").queryAs(TextField.class).getText()).isEqualTo(size.getValue().toString());
         Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(size.getKey() * size.getValue() * percentage)));
 
         robot.clickOn("#btnSizeLarge");
-        size = StartscreenController.SIZES.get("LARGE");
+        size = StartscreenController.SIZES.get("Large");
         Assertions.assertThat(robot.lookup("#fieldWidth").queryAs(TextField.class).getText()).isEqualTo(size.getKey().toString());
         Assertions.assertThat(robot.lookup("#fieldHeight").queryAs(TextField.class).getText()).isEqualTo(size.getValue().toString());
         Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(size.getKey() * size.getValue() * percentage)));
     }
 
     @Test
-    public void testDifficultyButtons(FxRobot robot) {
-        Pair<Integer,Integer> size = StartscreenController.SIZES.get("SMALL");
+    void testDifficultyButtons(FxRobot robot) {
+        Pair<Integer,Integer> size = StartscreenController.SIZES.get("Small");
         int total = size.getKey() * size.getValue();
 
         robot.clickOn("#btnDifficultyEasy");
-        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(total * StartscreenController.DIFFICULTIES.get("EASY"))));
+        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(total * StartscreenController.DIFFICULTIES.get("Easy"))));
 
         robot.clickOn("#btnDifficultyMedium");
-        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(total * StartscreenController.DIFFICULTIES.get("MEDIUM"))));
+        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(total * StartscreenController.DIFFICULTIES.get("Medium"))));
 
         robot.clickOn("#btnDifficultyHard");
-        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(total * StartscreenController.DIFFICULTIES.get("HARD"))));
+        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(total * StartscreenController.DIFFICULTIES.get("Hard"))));
     }
 
     @Tag("Slow")
@@ -75,9 +75,9 @@ public class StartscreenTest {
         Assertions.assertThat(robot.lookup("#fieldHeight").queryAs(TextField.class).isDisable()).isFalse();
 
         // Check that legal values stay normal and that mines are updated
-        double percentage = StartscreenController.DIFFICULTIES.get("EASY");
-        int width = StartscreenController.SIZES.get("SMALL").getKey();
-        int height = StartscreenController.SIZES.get("SMALL").getValue();
+        double percentage = StartscreenController.DIFFICULTIES.get("Easy");
+        int width = StartscreenController.SIZES.get("Small").getKey();
+        int height = StartscreenController.SIZES.get("Small").getValue();
         for (width = 4; width <= 10; width++) {
             robot.clickOn("#fieldWidth").eraseText(5).write(String.valueOf(width)).clickOn("#btnSizeCustom");
             Assertions.assertThat(robot.lookup("#fieldWidth").queryAs(TextField.class).getText()).isEqualTo(String.valueOf(width));
@@ -118,17 +118,62 @@ public class StartscreenTest {
         height = 4;
 
         // Check that values above 100 gets corrected
-        for (width = 101; width < 110; width++) {
+        for (width = 101; width < 105; width++) {
             robot.clickOn("#fieldWidth").eraseText(5).write(String.valueOf(width)).clickOn("#btnSizeCustom");
             Assertions.assertThat(robot.lookup("#fieldWidth").queryAs(TextField.class).getText()).isEqualTo("100");
             Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(100 * height * percentage)));
         }
         width = 100;
 
-        for (height = 101; height < 110; height++) {
+        for (height = 101; height < 105; height++) {
             robot.clickOn("#fieldHeight").eraseText(5).write(String.valueOf(height)).clickOn("#btnSizeCustom");
             Assertions.assertThat(robot.lookup("#fieldHeight").queryAs(TextField.class).getText()).isEqualTo("100");
             Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf((int) Math.round(width * 100 * percentage)));
         }
+    }
+
+    @Test
+    void testCustomDifficulty(FxRobot robot) {
+        robot.clickOn("#btnDifficultyCustom");
+        
+        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).isDisable()).isFalse();
+
+        // Check that legal values stay normal
+        int mines;
+        int width = StartscreenController.SIZES.get("Small").getKey();
+        int height = StartscreenController.SIZES.get("Small").getValue();
+        for (mines = 1; mines <= 5; mines++) {
+            robot.clickOn("#fieldMines").eraseText(5).write(String.valueOf(mines)).clickOn("#btnDifficultyCustom");
+            Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf(mines));
+        }
+        for (mines = width * height - 15; mines <= width * height - 10; mines++) {
+            robot.clickOn("#fieldMines").eraseText(5).write(String.valueOf(mines)).clickOn("#btnDifficultyCustom");
+            Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf(mines));
+        }
+
+        // Check that 0 gets corrected
+        mines = 0;
+        robot.clickOn("#fieldMines").eraseText(5).write(String.valueOf(mines)).clickOn("#btnDifficultyCustom");
+        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf(1));
+
+        // Check that high values get corrected
+        for (mines = width * height - 9; mines <= width * height - 5; mines++) {
+            robot.clickOn("#fieldMines").eraseText(5).write(String.valueOf(mines)).clickOn("#btnDifficultyCustom");
+            Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf(width * height - 10));
+        }
+
+        // Check that mines get lowered when max is lowered
+        robot.clickOn("#btnSizeMedium");
+        width = StartscreenController.SIZES.get("Medium").getKey();
+        height = StartscreenController.SIZES.get("Medium").getValue();
+        mines = width * height - 10;
+        robot.clickOn("#fieldMines").eraseText(5).write(String.valueOf(mines)).clickOn("#btnDifficultyCustom");
+        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf(mines));
+        robot.clickOn("#btnSizeSmall");
+        width = StartscreenController.SIZES.get("Small").getKey();
+        height = StartscreenController.SIZES.get("Small").getValue();
+        mines = width * height - 10;
+        Assertions.assertThat(robot.lookup("#fieldMines").queryAs(TextField.class).getText()).isEqualTo(String.valueOf(mines));
+
     }
 }

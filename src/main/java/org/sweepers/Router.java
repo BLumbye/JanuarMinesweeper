@@ -12,7 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
 public class Router {
-    public static Scene toStartscreen(Class clazz) {
+    public static Scene toStartscreen(Class<?> clazz) {
         // Set up controllers
         StartscreenController startscreenController = new StartscreenController();
 
@@ -29,7 +29,7 @@ public class Router {
         }
     }
 
-    public static Scene toHighscores(Class clazz) {
+    public static Scene toHighscores(Class<?> clazz) {
         // Set up controllers
         HighscoreController highscoreController = new HighscoreController();
 
@@ -46,7 +46,7 @@ public class Router {
         }
     }
 
-    public static Scene toNewHighscores(Class clazz, Level level) {
+    public static Scene toNewHighscores(Class<?> clazz, Level level) {
         // Set up controllers
         NewHighscoreController newHighscoreController = new NewHighscoreController(level);
 
@@ -63,7 +63,7 @@ public class Router {
         }
     }
 
-    public static Scene toGame(Class clazz, Level level) {
+    public static Scene toGame(Class<?> clazz, Level level) {
         // Set up controllers
         GameController gameController = new GameController(level);
 

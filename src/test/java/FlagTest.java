@@ -8,7 +8,7 @@ public class FlagTest {
     public void testFlagged() {
         int height = 100;
         int width = 100;
-        Level level = new Level(height, width, 1);
+        Level level = new Level(height, width, 1, null, null);
         level.generateLevel();
         int count = 0;
         for (int i = 0; i < width; i++) {
