@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.sweepers.control.GameController;
 import org.sweepers.control.HighscoreController;
+import org.sweepers.control.NewHighscoreController;
 import org.sweepers.control.StartscreenController;
 import org.sweepers.models.Level;
 
@@ -35,6 +36,23 @@ public class Router {
         // Load FXML
         FXMLLoader loader = new FXMLLoader(clazz.getResource("/Highscores.fxml"));
         loader.setController(highscoreController);
+
+        // Create scene
+        try {
+            return new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Scene toNewHighscores(Class clazz, Level level) {
+        // Set up controllers
+        NewHighscoreController newHighscoreController = new NewHighscoreController(level);
+
+        // Load FXML
+        FXMLLoader loader = new FXMLLoader(clazz.getResource("/NewHighscore.fxml"));
+        loader.setController(newHighscoreController);
 
         // Create scene
         try {

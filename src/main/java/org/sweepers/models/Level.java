@@ -27,11 +27,15 @@ public class Level {
     private BooleanProperty initialized;
     private boolean inProgress;
     private long startTime;
+
+    // For highscore
     private long totalTime;
+    private String sizeSetting;
+    private String difficultySetting;
 
     private List<BiConsumer<Cell, Cell>> cellListeners;
 
-    public Level(int height, int width, int mines) throws IllegalArgumentException {
+    public Level(int height, int width, int mines, String sizeSetting, String difficultySetting) throws IllegalArgumentException {
 
         // Check preconditions
         if (height < 4 || height > 100 || width < 4 || width > 100) {
@@ -57,6 +61,9 @@ public class Level {
         initialized = new SimpleBooleanProperty(false);
         cellListeners = new ArrayList<>();
         inProgress = true;
+
+        this.sizeSetting = sizeSetting;
+        this.difficultySetting = difficultySetting;
     }
 
     /**
@@ -298,6 +305,18 @@ public class Level {
 
     public long getElapsedTime() {
         return System.currentTimeMillis() - startTime;
+    }
+
+    public String getSizeSetting() {
+        return sizeSetting;
+    }
+
+    public String getDifficultySetting() {
+        return difficultySetting;
+    }
+
+    public long getTotalTime() {
+        return totalTime;
     }
     // #endregion
 }

@@ -1,6 +1,11 @@
 package org.sweepers.control;
 
+import java.io.FileNotFoundException;
+import java.util.List;
+
+import org.sweepers.Highscores;
 import org.sweepers.Router;
+import org.sweepers.models.Highscore;
 import org.sweepers.models.Level;
 import org.sweepers.view.GameAudio;
 import org.sweepers.view.GameView;
@@ -15,6 +20,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -208,6 +214,9 @@ public class GameController {
         txtEnd.setText("You win!");
         txtEnd.getStyleClass().add("win");
         end();
+
+        if (isHighscore())
+            openNewHighscore();
     }
 
     private void lose() {
@@ -222,5 +231,31 @@ public class GameController {
         gameView.revealAll();
         level.stop();
         boxEnd.setVisible(true);
+    }
+
+    private boolean isHighscore() {
+        try {
+            List<Highscore> scores = Highscores.getInstance()
+                    .getHighscore(level.getSizeSetting() + "_" + level.getDifficultySetting());
+            return (scores.size() < 5
+                    || level.getTotalTime() < scores.get(scores.size() - 1).time)
+                    && level.getSizeSetting() != "Custom"
+                    && level.getDifficultySetting() != "Custom"
+                    && level.getDifficultySetting() != "Laos";
+        } catch (FileNotFoundException e) {   
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void openNewHighscore() {
+        Stage dialog = new Stage();
+        dialog.setMinWidth(250);
+        dialog.setMinHeight(380);
+        dialog.setTitle("New Highscore");
+        dialog.setScene(Router.toNewHighscores(getClass(), level));
+        dialog.initOwner(btnRestart.getScene().getWindow());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.show();
     }
 }

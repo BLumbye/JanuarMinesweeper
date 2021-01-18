@@ -7,3 +7,8 @@
   -fx-fill: #FF0000;
   fill: #FF0000;
 }
+
+.you Text {
+  -fx-fill: gold;
+  fill: gold;
+}

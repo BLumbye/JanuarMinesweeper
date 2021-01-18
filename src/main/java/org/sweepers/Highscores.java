@@ -45,8 +45,8 @@ public class Highscores {
                         e.printStackTrace();
                         continue;
                     }
-                    scores.put(key, list);
                 }
+                scores.put(key, list);
                 scanner.close();
             } else {
                 scores.put(key, new ArrayList<>());

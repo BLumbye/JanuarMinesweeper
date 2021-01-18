@@ -48,37 +48,40 @@ public class StartscreenController {
     private int width, height, mines;
     private double percentageMines;
 
+    private String sizeSetting;
+    private String difficultySetting;
+
     public static final Map<String,Pair<Integer,Integer>> SIZES = Map.of(
-        "SMALL", new Pair<Integer,Integer>(9,9),
-        "MEDIUM", new Pair<Integer,Integer>(16,16),
-        "LARGE", new Pair<Integer,Integer>(30,16)
+        "Small", new Pair<Integer,Integer>(9,9),
+        "Medium", new Pair<Integer,Integer>(16,16),
+        "Large", new Pair<Integer,Integer>(30,16)
     );
 
     public static final Map<String,Double> DIFFICULTIES = Map.of(
-        "EASY", 10.0 / (9 * 9),
-        "MEDIUM", 40.0 / (16 * 16),
-        "HARD", 100.0 / (30 * 16),
-        "LAOS", 0.8
+        "Easy", 10.0 / (9 * 9),
+        "Medium", 40.0 / (16 * 16),
+        "Hard", 100.0 / (30 * 16),
+        "Laos", 0.8
     );
 
     @FXML
     public void initialize() {
         // Set standard values: small - easy
-        sizeButton("SMALL", btnSizeSmall);
-        difficultyButton("EASY", btnDifficultyEasy);
+        sizeButton("Small", btnSizeSmall);
+        difficultyButton("Easy", btnDifficultyEasy);
 
         // Add listeners to size buttons
-        btnSizeSmall.setOnAction(event -> { sizeButton("SMALL", btnSizeSmall); });
-        btnSizeMedium.setOnAction(event -> { sizeButton("MEDIUM", btnSizeMedium); });
-        btnSizeLarge.setOnAction(event -> { sizeButton("LARGE", btnSizeLarge); });
-        btnSizeCustom.setOnAction(event -> { sizeButton("CUSTOM", btnSizeCustom); });
+        btnSizeSmall.setOnAction(event -> { sizeButton("Small", btnSizeSmall); });
+        btnSizeMedium.setOnAction(event -> { sizeButton("Medium", btnSizeMedium); });
+        btnSizeLarge.setOnAction(event -> { sizeButton("Large", btnSizeLarge); });
+        btnSizeCustom.setOnAction(event -> { sizeButton("Custom", btnSizeCustom); });
 
         // Add listeners to difficulty buttons
-        btnDifficultyEasy.setOnAction(event -> { difficultyButton("EASY", btnDifficultyEasy); });
-        btnDifficultyMedium.setOnAction(event -> { difficultyButton("MEDIUM", btnDifficultyMedium); });
-        btnDifficultyHard.setOnAction(event -> { difficultyButton("HARD", btnDifficultyHard); });
-        txtLaos.setOnMouseClicked(event -> { difficultyButton("LAOS", null); });
-        btnDifficultyCustom.setOnAction(event -> { difficultyButton("CUSTOM", btnDifficultyCustom); });
+        btnDifficultyEasy.setOnAction(event -> { difficultyButton("Easy", btnDifficultyEasy); });
+        btnDifficultyMedium.setOnAction(event -> { difficultyButton("Medium", btnDifficultyMedium); });
+        btnDifficultyHard.setOnAction(event -> { difficultyButton("Hard", btnDifficultyHard); });
+        txtLaos.setOnMouseClicked(event -> { difficultyButton("Laos", null); });
+        btnDifficultyCustom.setOnAction(event -> { difficultyButton("Custom", btnDifficultyCustom); });
 
         // Allow only numbers in fields
         UnaryOperator<Change> numberFilter = change -> {
@@ -99,7 +102,9 @@ public class StartscreenController {
     }
 
     public void sizeButton(String key, Button btn) {
-        if (key.equals("CUSTOM")) {
+        sizeSetting = key;
+
+        if (key.equals("Custom")) {
             fieldHeight.setDisable(false);
             fieldWidth.setDisable(false);
         } else {
@@ -115,7 +120,9 @@ public class StartscreenController {
     }
 
     public void difficultyButton(String key, Button btn) {
-        if (key.equals("CUSTOM")) {
+        difficultySetting = key;
+
+        if (key.equals("Custom")) {
             fieldMines.setDisable(false);
         } else {
             setDifficulty(DIFFICULTIES.get(key));
@@ -131,7 +138,7 @@ public class StartscreenController {
     @FXML
     public void startGame(ActionEvent event) {
         validateFields();
-        Level level = new Level(width, height, mines);
+        Level level = new Level(width, height, mines, sizeSetting, difficultySetting);
         Stage stage = (Stage) txtLaos.getScene().getWindow();
         stage.setScene(Router.toGame(getClass(), level));
     }
