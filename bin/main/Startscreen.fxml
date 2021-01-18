@@ -19,7 +19,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane prefHeight="400.0" prefWidth="600.0" stylesheets="@Startscreen.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Pane prefHeight="400.0" prefWidth="600.0">
@@ -62,26 +61,36 @@
             <Insets />
          </opaqueInsets>
          <bottom>
-            <VBox alignment="CENTER" prefHeight="100.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" prefHeight="100.0" spacing="66.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="btnStart" mnemonicParsing="false" text="Start Game">
+                  <Button layoutX="260.0" layoutY="42.0" mnemonicParsing="false" onAction="#quitGame" prefWidth="100.0" text="Quit">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#startGame" text="Start Game">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Button>
+                  <Button layoutX="310.0" layoutY="42.0" mnemonicParsing="false" onAction="#highscores" prefWidth="100.0" text="Highscores">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
                </children>
-            </VBox>
+            </HBox>
          </bottom>
          <center>
             <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="32.0" BorderPane.alignment="CENTER">
                <children>
                   <VBox alignment="CENTER" layoutX="178.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="8.0" styleClass="panel">
                      <children>
-                        <Label text="Size" textFill="WHITE">
+                        <Text fill="WHITE" stroke="BLACK" strokeType="OUTSIDE" text="Size">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
-                        </Label>
+                        </Text>
                         <Button fx:id="btnSizeSmall" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="selected">
                            <graphic>
                               <HBox alignment="CENTER">
@@ -170,11 +179,11 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="8.0" styleClass="panel">
                      <children>
-                        <Label text="Difficulty" textFill="WHITE">
+                        <Text fill="WHITE" stroke="BLACK" strokeType="OUTSIDE" text="Difficulty">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
-                        </Label>
+                        </Text>
                         <Button fx:id="btnDifficultyEasy" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="selected">
                            <graphic>
                               <HBox alignment="CENTER">

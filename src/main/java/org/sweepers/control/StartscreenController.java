@@ -1,15 +1,13 @@
 package org.sweepers.control;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import org.sweepers.Router;
 import org.sweepers.models.Level;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -47,19 +45,16 @@ public class StartscreenController {
     @FXML
     private TextField fieldMines;
 
-    @FXML
-    private Button btnStart;
-
     private int width, height, mines;
     private double percentageMines;
 
-    private static final Map<String,Pair<Integer,Integer>> SIZES = Map.of(
+    public static final Map<String,Pair<Integer,Integer>> SIZES = Map.of(
         "SMALL", new Pair<Integer,Integer>(9,9),
         "MEDIUM", new Pair<Integer,Integer>(16,16),
         "LARGE", new Pair<Integer,Integer>(30,16)
     );
 
-    private static final Map<String,Double> DIFFICULTIES = Map.of(
+    public static final Map<String,Double> DIFFICULTIES = Map.of(
         "EASY", 10.0 / (9 * 9),
         "MEDIUM", 40.0 / (16 * 16),
         "HARD", 100.0 / (30 * 16),
@@ -101,9 +96,6 @@ public class StartscreenController {
         fieldWidth.focusedProperty().addListener((arg0, oldValue, newValue) -> { if (!newValue) { validateFields(); } });
         fieldHeight.focusedProperty().addListener((arg0, oldValue, newValue) -> { if (!newValue) { validateFields(); } });
         fieldMines.focusedProperty().addListener((arg0, oldValue, newValue) -> { if (!newValue) { validateFields(); } });
-
-        // Start button
-        btnStart.setOnAction(this::startGame);
     }
 
     public void sizeButton(String key, Button btn) {
@@ -136,20 +128,24 @@ public class StartscreenController {
         if (btn != null) btn.getStyleClass().add("selected");
     }
 
+    @FXML
     public void startGame(ActionEvent event) {
-        try {
-            validateFields();
-            Level level = new Level(width, height, mines);
-            GameController gameController = new GameController(level);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GameView.fxml"));
-            loader.setController(gameController);
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) btnStart.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        validateFields();
+        Level level = new Level(width, height, mines);
+        Stage stage = (Stage) txtLaos.getScene().getWindow();
+        stage.setScene(Router.toGame(getClass(), level));
+    }
+
+    @FXML
+    public void quitGame(ActionEvent event) {
+        Stage stage = (Stage) txtLaos.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    public void highscores(ActionEvent event) {
+        Stage stage = (Stage) txtLaos.getScene().getWindow();
+        stage.setScene(Router.toHighscores(getClass()));
     }
 
     public void validateFields() {

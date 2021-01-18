@@ -10,13 +10,10 @@ import org.sweepers.models.Mine;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
-import org.testfx.robot.Motion;
 
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseButton;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 @ExtendWith(ApplicationExtension.class)

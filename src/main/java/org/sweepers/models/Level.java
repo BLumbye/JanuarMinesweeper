@@ -85,7 +85,7 @@ public class Level {
             if ((level[y][x] instanceof Mineless && ((Mineless) level[y][x]).getNeighbors() == 0)) {
                 for (int i = Math.max(y - 1, 0); i <= Math.min(y + 1, height - 1); i++) {
                     for (int j = Math.max(x - 1, 0); j <= Math.min(x + 1, width - 1); j++) {
-                        if (!level[i][j].isFlagged()) {
+                        if (!level[i][j].isFlagged() && !level[i][j].isRevealed()) {
                             onClick(j, i);
                         }
                     }
@@ -97,13 +97,36 @@ public class Level {
             });
 
             return level[y][x] instanceof Mine;
+        } else {
+            int flaggedNeighbors = 0;
+            for (int i = Math.max(y - 1, 0); i <= Math.min(y + 1, height - 1); i++) {
+                for (int j = Math.max(x - 1, 0); j <= Math.min(x + 1, width - 1); j++) {
+                    if (level[i][j].isFlagged()) {
+                        flaggedNeighbors++;
+                    }
+                }
+            }
+            if (flaggedNeighbors == ((Mineless) level[y][x]).getNeighbors()) {
+                boolean lost = false;
+                for (int i = Math.max(y - 1, 0); i <= Math.min(y + 1, height - 1); i++) {
+                    for (int j = Math.max(x - 1, 0); j <= Math.min(x + 1, width - 1); j++) {
+                        if (!level[i][j].isFlagged() && !level[i][j].isRevealed()) {
+                            if (onClick(j, i)) {
+                                lost = true;
+                            }
+                        }
+                    }
+                }
+                return lost;
+            }
         }
         return false;
     }
 
     public void flag(int x, int y) {
-        if(!level[y][x].isFlagged() && flagged.get() >= 9999) return;
-        
+        if (!level[y][x].isFlagged() && flagged.get() >= 9999)
+            return;
+
         Cell oldCell = (Cell) level[y][x].clone();
         flagged.set(flagged.get() + (level[y][x].toggleFlagged() ? 1 : -1));
 
@@ -113,10 +136,12 @@ public class Level {
     }
 
     /**
-     * Returns if the player has won the game. Checks that the correct number of cells are revealed, and that no mines are revealed.
+     * Returns if the player has won the game. Checks that the correct number of
+     * cells are revealed, and that no mines are revealed.
      */
     public boolean gameWon() {
-        return revealed + mines.get() == width * height && !Arrays.stream(level).flatMap(Arrays::stream).anyMatch(c -> c instanceof Mine && c.isRevealed());
+        return revealed + mines.get() == width * height
+                && !Arrays.stream(level).flatMap(Arrays::stream).anyMatch(c -> c instanceof Mine && c.isRevealed());
     }
 
     /**
@@ -146,9 +171,10 @@ public class Level {
         return count;
     }
 
-    //#region Generate level methods
+    // #region Generate level methods
     /**
      * Starts the game with a predefined level. Only used for testing.
+     * 
      * @param level the predefined level
      */
     public void generateTestLevel(Cell[][] lvl) {
@@ -168,8 +194,9 @@ public class Level {
     }
 
     /**
-     * This public generateLevel method is used to generate a level with a free start.
-     * The free start ensures that there are no mines on the startPosition and the 8 sorrounding cells.
+     * This public generateLevel method is used to generate a level with a free
+     * start. The free start ensures that there are no mines on the startPosition
+     * and the 8 sorrounding cells.
      */
     public void generateLevel(Pair<Integer, Integer> startPosition) {
         // Populate valid spots
@@ -194,7 +221,8 @@ public class Level {
     }
 
     /**
-     * This public generateLevel method is used to generate a level without a free start.
+     * This public generateLevel method is used to generate a level without a free
+     * start.
      */
     public void generateLevel() {
         // Populate valid spots
@@ -233,9 +261,9 @@ public class Level {
         initialized.set(true);
         startTime = System.currentTimeMillis();
     }
-    //#endregion
+    // #endregion
 
-    //#region Getters and setters
+    // #region Getters and setters
     public Cell[][] getLevel() {
         return level;
     }
@@ -264,8 +292,12 @@ public class Level {
         return flagged;
     }
 
+    public int getFlaggedInt() {
+        return flagged.get();
+    }
+
     public long getElapsedTime() {
         return System.currentTimeMillis() - startTime;
     }
-    //#endregion
+    // #endregion
 }

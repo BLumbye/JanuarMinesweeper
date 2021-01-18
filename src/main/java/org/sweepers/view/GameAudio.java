@@ -1,31 +1,20 @@
-/*
 package org.sweepers.view;
 
-import java.io.File;
-
 import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 public class GameAudio {
+    private AudioClip explosion, win;
 
-    Media sound = new Media("explosion.mp3");
-    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-    
-    //Empty constructor
-    public GameAudio()
-    {
+    public GameAudio() {
+        explosion = new AudioClip(getClass().getResource("/explosion.wav").toExternalForm());
+        win = new AudioClip(getClass().getResource("/win.wav").toExternalForm());
     }
 
+    public void playExplosion() {
+        explosion.play();
+    }
 
+    public void playWin() {
+        win.play();
+    }
 }
-
-*/
-
-/*
-I main 
-
-GameAudio explosion = new GameAudio();
-ct.mediaPlayer.play();
-
-*/

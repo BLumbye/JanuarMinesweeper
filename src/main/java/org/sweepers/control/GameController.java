@@ -1,15 +1,14 @@
 package org.sweepers.control;
 
+import org.sweepers.Router;
 import org.sweepers.models.Level;
+import org.sweepers.view.GameAudio;
 import org.sweepers.view.GameView;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
@@ -61,6 +60,7 @@ public class GameController {
     private Level level;
 
     private GameView gameView;
+    private GameAudio gameAudio;
     private int cellWidth, cellHeight;
     private int canvasWidth, canvasHeight;
     private Timeline timerTimeline;
@@ -80,17 +80,21 @@ public class GameController {
 
         // Add listeners to level and the mineless cells
         level.addCellListener(gameView::onCellUpdate);
-        level.isInitialized().addListener((c, arg1, arg2) -> { start(); });
+        level.isInitialized().addListener((c, arg1, arg2) -> {
+            start();
+        });
         start();
-        
+
         canvasFlag.addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
 
         initializeStatusBar();
+        gameAudio = new GameAudio();
     }
 
     private void start() {
-        if (!level.isInitialized().getValue()) return;
-        
+        if (!level.isInitialized().getValue())
+            return;
+
         gameView.drawCells(level.getLevel(), canvasHeight, canvasWidth);
         startTimer();
     }
@@ -129,35 +133,18 @@ public class GameController {
         txtMines.textProperty().bind(level.getMines().asString());
 
         btnRestart.setOnAction(event -> {
-            try {
-                // Set up controllers
-                StartscreenController startscreenController = new StartscreenController();
-                
-                // Load FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Startscreen.fxml"));
-                loader.setController(startscreenController);
-
-                // Create scene
-                Scene scene = new Scene(loader.load());
-
-                Stage stage = (Stage) btnRestart.getScene().getWindow();
-                stage.setScene(scene);
-            } catch (Exception e) {
-                //TODO: handle exception
-            }
+            Stage stage = (Stage) btnRestart.getScene().getWindow();
+            stage.setScene(Router.toStartscreen(getClass()));
         });
     }
 
     private void startTimer() {
-        timerTimeline = new Timeline(
-            new KeyFrame(Duration.seconds(0), event -> {
-                long elapsedTime = level.getElapsedTime();
-                long minutes = elapsedTime / 1000 / 60;
-                long seconds = (elapsedTime / 1000) % 60;
-                txtTimer.setText(String.format("%d:%02d", minutes, seconds));
-            }),
-            new KeyFrame(Duration.millis(200))
-        );
+        timerTimeline = new Timeline(new KeyFrame(Duration.seconds(0), event -> {
+            long elapsedTime = level.getElapsedTime();
+            long minutes = elapsedTime / 1000 / 60;
+            long seconds = (elapsedTime / 1000) % 60;
+            txtTimer.setText(String.format("%d:%02d", minutes, seconds));
+        }), new KeyFrame(Duration.millis(200)));
         timerTimeline.setCycleCount(Animation.INDEFINITE);
         timerTimeline.play();
     }
@@ -184,17 +171,17 @@ public class GameController {
         int y = Math.floorDiv((int) mouseY, cellHeight);
 
         if (!level.isInitialized().get()) {
-            level.generateLevel(new Pair<Integer,Integer>(x, y));
+            level.generateLevel(new Pair<Integer, Integer>(x, y));
         }
 
-        if (level.getLevel()[y][x].isFlagged()){
+        if (level.getLevel()[y][x].isFlagged()) {
             return;
         }
-        
+
         if (level.onClick(x, y)) {
             lose();
         }
-        
+
         if (level.gameWon()) {
             win();
         }
@@ -212,17 +199,19 @@ public class GameController {
         if (!level.isInitialized().get()) {
             level.generateLevel();
         }
-        if (!level.getLevel()[y][x].isRevealed())    
-        level.flag(x, y);
+        if (!level.getLevel()[y][x].isRevealed())
+            level.flag(x, y);
     }
 
     private void win() {
+        gameAudio.playWin();
         txtEnd.setText("You win!");
         txtEnd.getStyleClass().add("win");
         end();
     }
 
     private void lose() {
+        gameAudio.playExplosion();
         txtEnd.setText("You lose!");
         txtEnd.getStyleClass().add("lose");
         end();
