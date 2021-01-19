@@ -130,6 +130,11 @@ public class Level {
         return false;
     }
 
+    /**
+     * Toggle the flag on a cell.
+     * @param the x-coordinate of the cell that's getting toggled
+     * @param the y-coordinate of the cell that's getting toggled
+     */
     public void flag(int x, int y) {
         if (!level[y][x].isFlagged() && flagged.get() >= 9999)
             return;

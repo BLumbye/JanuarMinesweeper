@@ -1,49 +1,111 @@
 package org.sweepers.view;
 
+import org.sweepers.components.ZoomableScrollPane;
+import org.sweepers.models.Cell;
+import org.sweepers.models.Mine;
+import org.sweepers.models.Mineless;
+
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.VPos;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import org.sweepers.models.Cell;
-import org.sweepers.models.Mine;
-import org.sweepers.models.Mineless;
 
 /**
  * This class visualizes the game itself
  */
 public class GameView {
+    public static final int PREFFERED_CELL_SIZE = 32;
+
     public static final Color[] numberColors = { Color.BLUE, Color.GREEN, Color.RED, Color.PURPLE, Color.MAROON,
             Color.TURQUOISE, Color.BLACK, Color.GRAY };
-    private GraphicsContext gcCell, gcOverlay, gcGrid, gcFlag;
-    private int cellWidth, cellHeight;
-    private double ratio;
-    private Image flagImage, bombImage;
 
-    public GameView(GraphicsContext gcCell, GraphicsContext gcOverlay, GraphicsContext gcGrid, GraphicsContext gcFlag,
-            int cellWidth, int cellHeight, double ratio) {
-        this.gcCell = gcCell;
-        this.gcOverlay = gcOverlay;
-        this.gcGrid = gcGrid;
-        this.gcFlag = gcFlag;
-        this.cellWidth = cellWidth;
-        this.cellHeight = cellHeight;
-        this.ratio = ratio;
+    private GraphicsContext gcCell, gcOverlay, gcGrid, gcFlag, gcMineSquares, gcFlagSquares;
+    private Canvas cCell, cOverlay, cGrid, cFlag, cMineSquares, cFlagSquares;
+    private int cellWidth, cellHeight;
+    private int canvasWidth, canvasHeight;
+    private Image flagImage, bombImage;
+    private ZoomableScrollPane scrollPane;
+
+    boolean mineSquaresActive = false;
+
+    public GameView(int gameWidth, int gameHeight, GridPane target) {
+        this.cellWidth = PREFFERED_CELL_SIZE;
+        this.cellHeight = PREFFERED_CELL_SIZE;
+        
+        canvasWidth = gameWidth * cellWidth;
+        canvasHeight = gameHeight * cellHeight;
         
         flagImage = new Image("/flag.png");
         bombImage = new Image("/bomb.png");
+
+        createNodes(target);
+        drawGridAndOverlay();
+    }
+
+    private void createNodes(GridPane target) {
+        // Create canvas
+        cCell = new Canvas(canvasWidth, canvasHeight);
+        cOverlay = new Canvas(canvasWidth, canvasHeight);
+        cGrid = new Canvas(canvasWidth, canvasHeight);
+        cFlag = new Canvas(canvasWidth, canvasHeight);
+        cFlagSquares = new Canvas(canvasWidth, canvasHeight);
+        cMineSquares = new Canvas(canvasWidth, canvasHeight);
+
+        // Set gc's
+        gcCell = cCell.getGraphicsContext2D();
+        gcOverlay = cOverlay.getGraphicsContext2D();
+        gcGrid = cGrid.getGraphicsContext2D();
+        gcFlag = cFlag.getGraphicsContext2D();
+        gcFlagSquares = cFlagSquares.getGraphicsContext2D();
+        gcMineSquares = cMineSquares.getGraphicsContext2D();
+
+        // Create outer nodes
+        StackPane stackPane = new StackPane(cCell, cOverlay, cGrid, cFlag, cMineSquares, cFlagSquares);
+        scrollPane = new ZoomableScrollPane(stackPane);
+        target.getChildren().add(scrollPane);
+
+        scrollPane.getScaleValue().addListener(this::onZoom);
+    }
+
+    public Canvas getClickableCanvas() {
+        return cFlagSquares;
+    }
+
+    public void zoom(double difference) {
+        scrollPane.zoom(difference);
+    }
+
+    private void onZoom(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
+        double gridLimit = 0.5;
+        double numberLimit = 0.35;
+
+        cGrid.setOpacity(((double) newVal - gridLimit) * 20);
+        cCell.setOpacity(((double) newVal - numberLimit) * 20);
+        cFlag.setOpacity(((double) newVal - numberLimit) * 20);
+        cFlagSquares.setOpacity(1 - cFlag.getOpacity());
+        
+        if (mineSquaresActive) {
+            cMineSquares.setOpacity(1 - cFlag.getOpacity());
+        }
     }
     
     /**
      * Draws the content of all the cells.
      * @param level the 2D array of cells
-     * @param height the height of the canvas
-     * @param width the width of the canvas
+     * @param canvasHeight the height of the canvas
+     * @param canvasWidth the width of the canvas
      */
-    public void drawCells(Cell[][] level, int height, int width) {
-        gcCell.setFont(Font.font("Arial", FontWeight.BOLD, 24 * ratio));
+    public void drawCells(Cell[][] level) {
+        gcCell.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        gcMineSquares.setFill(Color.BLACK);
+        cMineSquares.setOpacity(0);
 
         // Draw lower layer - mines and numbers
         for (int y = 0; y < level.length; y++) {
@@ -51,6 +113,7 @@ public class GameView {
                 if (level[y][x] instanceof Mine) {
                     // Draw Image
                     gcCell.drawImage(bombImage, x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                    gcMineSquares.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
                 } else {
                     int number = ((Mineless) level[y][x]).getNeighbors();
                     if (number != 0) {
@@ -66,23 +129,27 @@ public class GameView {
 
     /**
      * Draws the gray grid on top of the cells, and the grid.
-     * @param height the height of the canvas
-     * @param width the width of the canvas
+     * @param canvasWidth the width of the canvas
+     * @param canvasHeight the height of the canvas
      */
-    public void drawGridAndOverlay(int height, int width) {
+    public void drawGridAndOverlay() {
         // Draw the overlay
         gcOverlay.setFill(Color.GREY);
-        gcOverlay.fillRect(0, 0, width, height);
+        gcOverlay.fillRect(0, 0, canvasWidth, canvasHeight);
         
         // Draw the grid
         gcGrid.setStroke(Color.BLACK);
-        gcGrid.setLineWidth(2 * ratio);
-        for (int y = 0; y <= height; y += cellHeight) {
-            gcGrid.strokeLine(0, y, width, y);
+        gcGrid.setLineWidth(2);
+        for (int y = 0; y <= canvasHeight; y += cellHeight) {
+            gcGrid.strokeLine(0, y, canvasWidth, y);
         }
-        for (int x = 0; x <= width; x += cellWidth) {
-            gcGrid.strokeLine(x, 0, x, height);
+        for (int x = 0; x <= canvasWidth; x += cellWidth) {
+            gcGrid.strokeLine(x, 0, x, canvasHeight);
         }
+
+        // Set flag squares color
+        cFlagSquares.setOpacity(0);
+        gcFlagSquares.setFill(Color.ORANGE);
     }
 
     /**
@@ -116,6 +183,7 @@ public class GameView {
      */
     public void drawFlag(int x, int y){
         gcFlag.drawImage(flagImage, x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+        gcFlagSquares.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
     }
 
     /**
@@ -125,6 +193,7 @@ public class GameView {
      */
     public void clearFlag(int x, int y){
         gcFlag.clearRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+        gcFlagSquares.clearRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
     }
 
     /**
@@ -132,6 +201,8 @@ public class GameView {
      */
     public void revealAll() {
         gcOverlay.clearRect(0, 0, gcOverlay.getCanvas().getWidth(), gcOverlay.getCanvas().getHeight());
+        mineSquaresActive = true;
+        cMineSquares.setOpacity(1 - cFlag.getOpacity());
     }
 
 }

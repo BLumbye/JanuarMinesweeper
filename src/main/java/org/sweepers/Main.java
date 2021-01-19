@@ -7,8 +7,10 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Minesweeper");
-        stage.setResizable(false);
-        stage.setMinWidth(200);
+        stage.setMinWidth(475);
+        stage.setMinHeight(425);
+        stage.setWidth(600);
+        stage.setHeight(400);
         stage.setScene(Router.toStartscreen(getClass()));
         stage.show();
     }

@@ -1,7 +1,8 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.beryx.jlink' version '2.23.2'
 }
 
 group 'org.sweepers'
@@ -17,6 +18,15 @@ dependencies {
     testCompile 'org.testfx:testfx-core:4.0.16-alpha'
     testCompile 'org.testfx:testfx-junit5:4.0.16-alpha'
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.18.1'
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
+    runtimeOnly "org.openjfx:javafx-controls:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-controls:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-controls:$javafx.version:mac"
+    runtimeOnly "org.openjfx:javafx-media:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-media:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-media:$javafx.version:mac"
 }
 
 reporting.baseDir = "my-reports"
@@ -43,7 +53,13 @@ jar {
         attributes 'Main-Class': 'org.sweepers.Main'
     }
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+jlink {
+    launcher {
+        name = 'sweepers'
     }
 }
 

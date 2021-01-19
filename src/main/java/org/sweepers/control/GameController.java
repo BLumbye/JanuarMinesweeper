@@ -14,14 +14,13 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
@@ -30,20 +29,6 @@ import javafx.util.Pair;
  * The controller handling the game part
  */
 public class GameController {
-    private static final int PREFFERED_CELL_SIZE = 32;
-
-    @FXML
-    private Canvas canvasLower;
-
-    @FXML
-    private Canvas canvasMiddle;
-
-    @FXML
-    private Canvas canvasUpper;
-
-    @FXML
-    private Canvas canvasFlag;
-
     @FXML
     private Text txtEnd;
 
@@ -62,13 +47,18 @@ public class GameController {
     @FXML
     private VBox boxEnd;
 
+    @FXML
+    private VBox boxZoom;
+
+    @FXML
+    private GridPane grid;
+
     // Model
     private Level level;
 
     private GameView gameView;
     private GameAudio gameAudio;
-    private int cellWidth, cellHeight;
-    private int canvasWidth, canvasHeight;
+    private int cellSize;
     private Timeline timerTimeline;
 
     public GameController(Level level) {
@@ -77,12 +67,9 @@ public class GameController {
 
     @FXML
     private void initialize() {
-        double ratio = resizeGame();
-
         // Draw level
-        gameView = new GameView(canvasLower.getGraphicsContext2D(), canvasMiddle.getGraphicsContext2D(),
-                canvasUpper.getGraphicsContext2D(), canvasFlag.getGraphicsContext2D(), cellWidth, cellHeight, ratio);
-        gameView.drawGridAndOverlay(canvasHeight, canvasWidth);
+        gameView = new GameView(level.getWidth(), level.getHeight(), grid);
+        cellSize = GameView.PREFFERED_CELL_SIZE;
 
         // Add listeners to level and the mineless cells
         level.addCellListener(gameView::onCellUpdate);
@@ -91,7 +78,12 @@ public class GameController {
         });
         start();
 
-        canvasFlag.addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
+        gameView.getClickableCanvas().addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
+
+        // Disable panning with left and right mouse button
+        // stack.addEventHandler(MouseEvent.ANY, event -> {
+        //     if (event.getButton() != MouseButton.MIDDLE) event.consume();
+        // });
 
         initializeStatusBar();
         gameAudio = new GameAudio();
@@ -101,37 +93,8 @@ public class GameController {
         if (!level.isInitialized().getValue())
             return;
 
-        gameView.drawCells(level.getLevel(), canvasHeight, canvasWidth);
+        gameView.drawCells(level.getLevel());
         startTimer();
-    }
-
-    private double resizeGame() {
-        int screenWidth = (int) Screen.getPrimary().getBounds().getWidth() - 100;
-        int screenHeight = (int) Screen.getPrimary().getBounds().getHeight() - 200;
-        canvasWidth = level.getWidth() * PREFFERED_CELL_SIZE;
-        canvasHeight = level.getHeight() * PREFFERED_CELL_SIZE;
-
-        double ratio = 1;
-        if (canvasWidth > screenWidth || canvasHeight > screenHeight) {
-            ratio = Math.min((double) screenWidth / canvasWidth, (double) screenHeight / canvasHeight);
-            int newCellSize = (int) Math.floor(PREFFERED_CELL_SIZE * ratio);
-            ratio = (double) newCellSize / PREFFERED_CELL_SIZE;
-            canvasWidth = level.getWidth() * newCellSize;
-            canvasHeight = level.getHeight() * newCellSize;
-        }
-
-        canvasLower.setWidth(canvasWidth);
-        canvasLower.setHeight(canvasHeight);
-        canvasMiddle.setWidth(canvasWidth);
-        canvasMiddle.setHeight(canvasHeight);
-        canvasUpper.setWidth(canvasWidth);
-        canvasUpper.setHeight(canvasHeight);
-        canvasFlag.setWidth(canvasWidth);
-        canvasFlag.setHeight(canvasHeight);
-
-        cellHeight = canvasHeight / level.getHeight();
-        cellWidth = canvasWidth / level.getWidth();
-        return ratio;
     }
 
     private void initializeStatusBar() {
@@ -159,6 +122,16 @@ public class GameController {
         timerTimeline.stop();
     }
 
+    @FXML
+    public void zoomIn() {
+        gameView.zoom(0.2);
+    }
+
+    @FXML
+    public void zoomOut() {
+        gameView.zoom(-0.2);
+    }
+
     private void mouseClicked(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             leftMouseClicked(event);
@@ -173,8 +146,8 @@ public class GameController {
 
         double mouseX = event.getX();
         double mouseY = event.getY();
-        int x = Math.floorDiv((int) mouseX, cellWidth);
-        int y = Math.floorDiv((int) mouseY, cellHeight);
+        int x = Math.floorDiv((int) mouseX, cellSize);
+        int y = Math.floorDiv((int) mouseY, cellSize);
 
         if (!level.isInitialized().get()) {
             level.generateLevel(new Pair<Integer, Integer>(x, y));
@@ -199,8 +172,8 @@ public class GameController {
 
         double mouseX = event.getX();
         double mouseY = event.getY();
-        int x = Math.floorDiv((int) mouseX, cellWidth);
-        int y = Math.floorDiv((int) mouseY, cellHeight);
+        int x = Math.floorDiv((int) mouseX, cellSize);
+        int y = Math.floorDiv((int) mouseY, cellSize);
 
         if (!level.isInitialized().get()) {
             level.generateLevel();
@@ -231,6 +204,7 @@ public class GameController {
         gameView.revealAll();
         level.stop();
         boxEnd.setVisible(true);
+        boxZoom.setVisible(false);
     }
 
     private boolean isHighscore() {
