@@ -83,22 +83,44 @@ public class Level {
      * @throws CloneNotSupportedException
      */
     public boolean onClick(int x, int y) {
+        return onClick(x, y, true);
+    }
+
+    private boolean onClick(int x, int y, boolean solveBlanks) {
         Cell oldCell = (Cell) level[y][x].clone();
 
-        if (!level[y][x].isRevealed()) {
+        if (level[y][x].isFlagged()) {
+            return false;
+        } else if (!level[y][x].isRevealed()) {
             revealed++;
             level[y][x].reveal();
 
-            if ((level[y][x] instanceof Mineless && ((Mineless) level[y][x]).getNeighbors() == 0)) {
-                for (int i = Math.max(y - 1, 0); i <= Math.min(y + 1, height - 1); i++) {
-                    for (int j = Math.max(x - 1, 0); j <= Math.min(x + 1, width - 1); j++) {
-                        if (!level[i][j].isFlagged() && !level[i][j].isRevealed()) {
-                            onClick(j, i);
+            // Blank cell clearer
+            if ((level[y][x] instanceof Mineless && ((Mineless) level[y][x]).getNeighbors() == 0) && solveBlanks) {
+                List<Mineless> blanks = new ArrayList<>();
+                List<Mineless> unchecked = new ArrayList<>();
+                unchecked.add((Mineless) level[y][x]);
+                while (!unchecked.isEmpty()) {
+                    int _x = unchecked.get(0).getX();
+                    int _y = unchecked.get(0).getY();
+                    unchecked.remove(0);
+                    for (int i = Math.max(_y - 1, 0); i <= Math.min(_y + 1, height - 1); i++) {
+                        for (int j = Math.max(_x - 1, 0); j <= Math.min(_x + 1, width - 1); j++) {
+                            if (!level[i][j].isFlagged() && !level[i][j].isRevealed() && !blanks.contains(level[i][j])) {
+                                blanks.add((Mineless) level[i][j]);
+                                if (((Mineless) level[i][j]).getNeighbors() == 0) {
+                                    unchecked.add((Mineless) level[i][j]);
+                                }
+                            }
                         }
                     }
                 }
+                for (Mineless mineless : blanks) {
+                    onClick(mineless.getX(), mineless.getY(), false);
+                }
             }
 
+            // Trigger listeners
             cellListeners.forEach(listener -> {
                 listener.accept(oldCell, level[y][x]);
             });
@@ -136,7 +158,7 @@ public class Level {
      * @param the y-coordinate of the cell that's getting toggled
      */
     public void flag(int x, int y) {
-        if (!level[y][x].isFlagged() && flagged.get() >= 9999)
+        if (!level[y][x].isFlagged() && flagged.get() >= 9999 || level[y][x].isRevealed())
             return;
 
         Cell oldCell = (Cell) level[y][x].clone();

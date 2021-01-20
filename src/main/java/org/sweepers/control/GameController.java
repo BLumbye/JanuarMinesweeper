@@ -113,7 +113,7 @@ public class GameController {
             long minutes = elapsedTime / 1000 / 60;
             long seconds = (elapsedTime / 1000) % 60;
             txtTimer.setText(String.format("%d:%02d", minutes, seconds));
-        }), new KeyFrame(Duration.millis(200)));
+        }), new KeyFrame(Duration.millis(10)));
         timerTimeline.setCycleCount(Animation.INDEFINITE);
         timerTimeline.play();
     }
@@ -153,10 +153,6 @@ public class GameController {
             level.generateLevel(new Pair<Integer, Integer>(x, y));
         }
 
-        if (level.getLevel()[y][x].isFlagged()) {
-            return;
-        }
-
         if (level.onClick(x, y)) {
             lose();
         }
@@ -178,8 +174,8 @@ public class GameController {
         if (!level.isInitialized().get()) {
             level.generateLevel();
         }
-        if (!level.getLevel()[y][x].isRevealed())
-            level.flag(x, y);
+
+        level.flag(x, y);
     }
 
     private void win() {
@@ -214,7 +210,9 @@ public class GameController {
                     .getHighscore(level.getSizeSetting() + "_" + level.getDifficultySetting());
             return (scores.size() < 5
                     || level.getTotalTime() < scores.get(scores.size() - 1).time)
+                    && level.getSizeSetting() != null
                     && level.getSizeSetting() != "Custom"
+                    && level.getDifficultySetting() != null
                     && level.getDifficultySetting() != "Custom"
                     && level.getDifficultySetting() != "Laos";
         } catch (FileNotFoundException e) {   

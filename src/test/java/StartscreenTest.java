@@ -132,6 +132,7 @@ public class StartscreenTest {
         }
     }
 
+    @Tag("Slow")
     @Test
     void testCustomDifficulty(FxRobot robot) {
         robot.clickOn("#btnDifficultyCustom");
