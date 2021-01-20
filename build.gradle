@@ -2,14 +2,16 @@ plugins {
     id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.9'
-    id 'org.beryx.jlink' version '2.23.2'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group 'org.sweepers'
 version '1.0-SNAPSHOT'
+mainClassName = 'org.sweepers.Main'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -27,6 +29,9 @@ dependencies {
     runtimeOnly "org.openjfx:javafx-media:$javafx.version:win"
     runtimeOnly "org.openjfx:javafx-media:$javafx.version:linux"
     runtimeOnly "org.openjfx:javafx-media:$javafx.version:mac"
+    runtimeOnly "org.openjfx:javafx-fxml:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-fxml:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-fxml:$javafx.version:mac"
 }
 
 reporting.baseDir = "my-reports"
@@ -50,16 +55,10 @@ javafx {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.sweepers.Main'
+        attributes 'Main-Class': 'org.sweepers.Launcher'
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
-jlink {
-    launcher {
-        name = 'sweepers'
     }
 }
 
