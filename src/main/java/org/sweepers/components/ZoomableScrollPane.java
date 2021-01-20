@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -20,10 +19,10 @@ import javafx.scene.layout.VBox;
 public class ZoomableScrollPane extends ScrollPane {
     private DoubleProperty scaleValue = new SimpleDoubleProperty(0.8);
     private double zoomIntensity = 0.02;
-    private StackPane target;
+    private Group target;
     private Group zoomNode;
 
-    public ZoomableScrollPane(StackPane target) {
+    public ZoomableScrollPane(Group target) {
         super();
         this.target = target;
         this.zoomNode = new Group(target);
@@ -68,7 +67,7 @@ public class ZoomableScrollPane extends ScrollPane {
 
     private boolean updateScale(double scale) {
         // Limit scale
-        double ratio = Math.min(getHeight() / target.getHeight(), getWidth() / target.getWidth());
+        double ratio = Math.min(getHeight() / target.prefHeight(0), getWidth() / target.prefHeight(0));
         scale = Math.max(ratio * 0.99, scale);
         scale = Math.min(1, scale);
 

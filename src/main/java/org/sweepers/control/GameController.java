@@ -69,7 +69,7 @@ public class GameController {
     @FXML
     private void initialize() {
         // Draw level
-        gameView = new GameView(level.getWidth(), level.getHeight(), grid);
+        gameView = new GameView(level, grid);
         cellSize = GameView.PREFFERED_CELL_SIZE;
 
         // Add listeners to level and the mineless cells
@@ -82,9 +82,9 @@ public class GameController {
         gameView.getClickableCanvas().addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
 
         // Disable panning with left and right mouse button
-        // stack.addEventHandler(MouseEvent.ANY, event -> {
-        //     if (event.getButton() != MouseButton.MIDDLE) event.consume();
-        // });
+        gameView.getClickableCanvas().addEventHandler(MouseEvent.ANY, event -> {
+            if (event.getButton() != MouseButton.MIDDLE) event.consume();
+        });
 
         initializeStatusBar();
         gameAudio = new GameAudio();
@@ -94,7 +94,7 @@ public class GameController {
         if (!level.isInitialized().getValue())
             return;
 
-        gameView.drawCells(level.getLevel());
+        gameView.drawCells();
         startTimer();
     }
 
