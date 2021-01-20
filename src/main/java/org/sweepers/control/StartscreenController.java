@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -44,6 +46,11 @@ public class StartscreenController {
     private TextField fieldHeight;
     @FXML
     private TextField fieldMines;
+
+    @FXML
+    private Circle circle;
+    @FXML
+    private StackPane stackc;
 
     private int width, height, mines;
     private double percentageMines;
@@ -99,6 +106,9 @@ public class StartscreenController {
         fieldWidth.focusedProperty().addListener((arg0, oldValue, newValue) -> { if (!newValue) { validateFields(); } });
         fieldHeight.focusedProperty().addListener((arg0, oldValue, newValue) -> { if (!newValue) { validateFields(); } });
         fieldMines.focusedProperty().addListener((arg0, oldValue, newValue) -> { if (!newValue) { validateFields(); } });
+
+        // Resize middle circle
+        circle.radiusProperty().bind(stackc.heightProperty().multiply(0.4));
     }
 
     public void sizeButton(String key, Button btn) {
@@ -139,8 +149,7 @@ public class StartscreenController {
     public void startGame(ActionEvent event) {
         validateFields();
         Level level = new Level(width, height, mines, sizeSetting, difficultySetting);
-        Stage stage = (Stage) txtLaos.getScene().getWindow();
-        stage.setScene(Router.toGame(getClass(), level));
+        txtLaos.getScene().setRoot(Router.toGame(getClass(), level));
     }
 
     @FXML
@@ -151,8 +160,7 @@ public class StartscreenController {
 
     @FXML
     public void highscores(ActionEvent event) {
-        Stage stage = (Stage) txtLaos.getScene().getWindow();
-        stage.setScene(Router.toHighscores(getClass()));
+        txtLaos.getScene().setRoot(Router.toHighscores(getClass()));
     }
 
     public void validateFields() {

@@ -9,10 +9,10 @@ import org.sweepers.control.StartscreenController;
 import org.sweepers.models.Level;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 
 public class Router {
-    public static Scene toStartscreen(Class<?> clazz) {
+    public static Parent toStartscreen(Class<?> clazz) {
         // Set up controllers
         StartscreenController startscreenController = new StartscreenController();
 
@@ -22,14 +22,14 @@ public class Router {
 
         // Create scene
         try {
-            return new Scene(loader.load());
+            return loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Scene toHighscores(Class<?> clazz) {
+    public static Parent toHighscores(Class<?> clazz) {
         // Set up controllers
         HighscoreController highscoreController = new HighscoreController();
 
@@ -39,14 +39,14 @@ public class Router {
 
         // Create scene
         try {
-            return new Scene(loader.load());
+            return loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Scene toNewHighscores(Class<?> clazz, Level level) {
+    public static Parent toNewHighscores(Class<?> clazz, Level level) {
         // Set up controllers
         NewHighscoreController newHighscoreController = new NewHighscoreController(level);
 
@@ -56,14 +56,14 @@ public class Router {
 
         // Create scene
         try {
-            return new Scene(loader.load());
+            return loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Scene toGame(Class<?> clazz, Level level) {
+    public static Parent toGame(Class<?> clazz, Level level) {
         // Set up controllers
         GameController gameController = new GameController(level);
 
@@ -73,7 +73,7 @@ public class Router {
 
         // Create scene
         try {
-            return new Scene(loader.load());
+            return loader.load();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

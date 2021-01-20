@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Point3D?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -14,10 +15,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<GridPane prefHeight="400.0" prefWidth="600.0" stylesheets="@Startscreen.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane prefHeight="400.0" prefWidth="600.0" stylesheets="@Startscreen.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="100.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints minHeight="10.0" percentHeight="25.0" vgrow="SOMETIMES" />
@@ -39,22 +39,28 @@
             </Text>
          </children>
       </VBox>
-      <StackPane style="-fx-background-color: #002868;" GridPane.rowIndex="1">
+      <StackPane fx:id="stackc" style="-fx-background-color: #002868;" GridPane.rowIndex="1">
          <children>
             <Group>
                <children>
-                  <Circle centerX="300.0" centerY="200.0" fill="WHITE" radius="80.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                  <Circle fx:id="circle" centerX="300.0" centerY="200.0" fill="WHITE" radius="80.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
                </children>
             </Group>
             <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="32.0">
                <children>
-                  <VBox alignment="CENTER" layoutX="178.0" layoutY="10.0" prefHeight="200.0" prefWidth="125.0" spacing="8.0" styleClass="panel">
+                  <VBox alignment="CENTER" layoutX="178.0" layoutY="10.0" maxHeight="-Infinity" prefHeight="200.0" prefWidth="125.0" rotate="-63.7" spacing="8.0" styleClass="panel">
                      <children>
-                        <ComboBox fx:id="comboSize" onAction="#updateScores" prefWidth="150.0" promptText="Size" />
+                        <ComboBox fx:id="comboSize" onAction="#updateScores" prefWidth="150.0" promptText="Size">
+                           <rotationAxis>
+                              <Point3D />
+                           </rotationAxis></ComboBox>
                         <ComboBox fx:id="comboDifficulty" layoutX="22.0" layoutY="98.0" onAction="#updateScores" prefWidth="150.0" promptText="Difficulty" />
                      </children>
+                     <rotationAxis>
+                        <Point3D />
+                     </rotationAxis>
                   </VBox>
-                  <VBox fx:id="boxScores" alignment="CENTER" prefHeight="200.0" prefWidth="175.0" spacing="8.0" styleClass="panel">
+                  <VBox fx:id="boxScores" alignment="CENTER" maxHeight="-Infinity" prefHeight="200.0" prefWidth="175.0" rotate="-64.8" spacing="8.0" styleClass="panel">
                      <children>
                         <HBox prefWidth="200.0">
                            <children>
@@ -78,6 +84,9 @@
                            </children>
                         </HBox>
                      </children>
+                     <rotationAxis>
+                        <Point3D />
+                     </rotationAxis>
                   </VBox>
                </children>
             </HBox>

@@ -14,6 +14,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -102,8 +103,7 @@ public class GameController {
         txtMines.textProperty().bind(level.getMines().asString());
 
         btnRestart.setOnAction(event -> {
-            Stage stage = (Stage) btnRestart.getScene().getWindow();
-            stage.setScene(Router.toStartscreen(getClass()));
+            btnRestart.getScene().setRoot(Router.toStartscreen(getClass()));
         });
     }
 
@@ -184,6 +184,7 @@ public class GameController {
 
     private void win() {
         gameAudio.playWin();
+        // gameView.playWinGif();
         txtEnd.setText("You win!");
         txtEnd.getStyleClass().add("win");
         end();
@@ -227,7 +228,7 @@ public class GameController {
         dialog.setMinWidth(250);
         dialog.setMinHeight(380);
         dialog.setTitle("New Highscore");
-        dialog.setScene(Router.toNewHighscores(getClass(), level));
+        dialog.setScene(new Scene(Router.toNewHighscores(getClass(), level)));
         dialog.initOwner(btnRestart.getScene().getWindow());
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.show();

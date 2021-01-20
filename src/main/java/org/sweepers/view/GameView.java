@@ -10,6 +10,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -32,6 +33,7 @@ public class GameView {
     private int canvasWidth, canvasHeight;
     private Image flagImage, bombImage;
     private ZoomableScrollPane scrollPane;
+    private ImageView winGif;
 
     boolean mineSquaresActive = false;
 
@@ -66,8 +68,13 @@ public class GameView {
         gcFlagSquares = cFlagSquares.getGraphicsContext2D();
         gcMineSquares = cMineSquares.getGraphicsContext2D();
 
+        // Create win gif
+        winGif = new ImageView(new Image("/confetti.gif"));
+        winGif.setOpacity(0);
+        winGif.setPickOnBounds(false);
+
         // Create outer nodes
-        StackPane stackPane = new StackPane(cCell, cOverlay, cGrid, cFlag, cMineSquares, cFlagSquares);
+        StackPane stackPane = new StackPane(cCell, cOverlay, cGrid, cFlag, cMineSquares, cFlagSquares, winGif);
         scrollPane = new ZoomableScrollPane(stackPane);
         target.getChildren().add(scrollPane);
 
@@ -205,4 +212,10 @@ public class GameView {
         cMineSquares.setOpacity(1 - cFlag.getOpacity());
     }
 
+    /**
+     * Plays the confetti gif.
+     */
+    public void playWinGif() {
+        winGif.setOpacity(1);
+    }
 }

@@ -13,9 +13,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class HighscoreController {
     @FXML
@@ -25,6 +26,11 @@ public class HighscoreController {
 
     @FXML
     private VBox boxScores;
+
+    @FXML
+    private Circle circle;
+    @FXML
+    private StackPane stackc;
 
     HBox[] labels;
 
@@ -57,6 +63,9 @@ public class HighscoreController {
         }
 
         updateScores(null);
+
+        // Resize middle circle
+        circle.radiusProperty().bind(stackc.heightProperty().multiply(0.4));
     }
 
     @FXML
@@ -86,7 +95,6 @@ public class HighscoreController {
 
     @FXML
     public void back() {
-        Stage stage = (Stage) boxScores.getScene().getWindow();
-        stage.setScene(Router.toStartscreen(getClass()));
+        boxScores.getScene().setRoot(Router.toStartscreen(getClass()));
     }
 }

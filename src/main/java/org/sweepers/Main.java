@@ -1,6 +1,7 @@
 package org.sweepers;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -9,9 +10,9 @@ public class Main extends Application {
         stage.setTitle("Minesweeper");
         stage.setMinWidth(475);
         stage.setMinHeight(425);
-        stage.setWidth(600);
-        stage.setHeight(400);
-        stage.setScene(Router.toStartscreen(getClass()));
+        stage.setWidth(650);
+        stage.setHeight(500);
+        stage.setScene(new Scene(Router.toStartscreen(getClass())));
         stage.show();
     }
 
