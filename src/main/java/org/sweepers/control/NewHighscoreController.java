@@ -48,7 +48,7 @@ public class NewHighscoreController {
                 scores.remove(5);
 
             for (int i = 0; i < 5; i++) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Score.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Score.fxml"));
                 HBox label = loader.load();
                 ((Text) label.lookup("#txtNumber")).setText((i + 1) + ".");
 

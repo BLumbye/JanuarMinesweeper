@@ -17,7 +17,7 @@ public class Router {
         StartscreenController startscreenController = new StartscreenController();
 
         // Load FXML
-        FXMLLoader loader = new FXMLLoader(clazz.getResource("/Startscreen.fxml"));
+        FXMLLoader loader = new FXMLLoader(clazz.getResource("/fxml/Startscreen.fxml"));
         loader.setController(startscreenController);
 
         // Create scene
@@ -34,7 +34,7 @@ public class Router {
         HighscoreController highscoreController = new HighscoreController();
 
         // Load FXML
-        FXMLLoader loader = new FXMLLoader(clazz.getResource("/Highscores.fxml"));
+        FXMLLoader loader = new FXMLLoader(clazz.getResource("/fxml/Highscores.fxml"));
         loader.setController(highscoreController);
 
         // Create scene
@@ -51,7 +51,7 @@ public class Router {
         NewHighscoreController newHighscoreController = new NewHighscoreController(level);
 
         // Load FXML
-        FXMLLoader loader = new FXMLLoader(clazz.getResource("/NewHighscore.fxml"));
+        FXMLLoader loader = new FXMLLoader(clazz.getResource("/fxml/NewHighscore.fxml"));
         loader.setController(newHighscoreController);
 
         // Create scene
@@ -68,7 +68,7 @@ public class Router {
         GameController gameController = new GameController(level);
 
         // Load FXML
-        FXMLLoader loader = new FXMLLoader(clazz.getResource("/GameView.fxml"));
+        FXMLLoader loader = new FXMLLoader(clazz.getResource("/fxml/GameView.fxml"));
         loader.setController(gameController);
 
         // Create scene

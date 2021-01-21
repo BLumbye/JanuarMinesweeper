@@ -7,7 +7,6 @@ import org.sweepers.models.Mine;
 import org.sweepers.models.Mineless;
 
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,10 +14,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 /**
  * This class visualizes the game itself
@@ -26,8 +21,7 @@ import javafx.scene.text.TextAlignment;
 public class GameView {
     public static final int PREFFERED_CELL_SIZE = 32;
 
-    public static final Color[] numberColors = { Color.BLUE, Color.GREEN, Color.RED, Color.PURPLE, Color.MAROON,
-            Color.TURQUOISE, Color.BLACK, Color.GRAY };
+    public Image[] numbers;
 
     private Rectangle[][] overlays;
     private ImageView[][] flags;
@@ -38,8 +32,6 @@ public class GameView {
 
     private Group container;
     private Group gCell, gOverlay, gGrid, gFlag, gMineSquares, gFlagSquares;
-
-    private Font numberFont;
 
     private Level level;
 
@@ -52,10 +44,15 @@ public class GameView {
         flags = new ImageView[level.getWidth()][level.getHeight()];
         flagSquares = new Rectangle[level.getWidth()][level.getHeight()];
 
-        flagImage = new Image("/flag.png");
-        mineImage = new Image("/bomb.png");
+        // Load images
+        flagImage = new Image("/sprites/flag.png");
+        mineImage = new Image("/sprites/bomb.png");
 
-        numberFont = Font.font("Arial", FontWeight.BOLD, 24);
+        // Load number images
+        numbers = new Image[8];
+        for (int i = 1; i <= 8; i++) {
+            numbers[i - 1] = new Image("numbers/num-" + i + ".png");
+        }
 
         createNodes(target);
         drawGridAndOverlay();
@@ -143,14 +140,10 @@ public class GameView {
                     int number = ((Mineless) cells[y][x]).getNeighbors();
                     if (number != 0) {
                         // Draw number
-                        Text num = new Text(x * PREFFERED_CELL_SIZE, (y + 0.5) * PREFFERED_CELL_SIZE,
-                                String.valueOf(number));
-                        num.setFill(numberColors[number - 1]);
-                        num.setFont(numberFont);
-                        num.setWrappingWidth(PREFFERED_CELL_SIZE);
-                        num.setTextAlignment(TextAlignment.CENTER);
-                        num.setTextOrigin(VPos.CENTER);
-                        gCell.getChildren().add(num);
+                        ImageView iv = new ImageView(numbers[number - 1]);
+                        iv.setFitWidth(PREFFERED_CELL_SIZE);
+                        iv.relocate(x * PREFFERED_CELL_SIZE, y * PREFFERED_CELL_SIZE);
+                        gCell.getChildren().add(iv);
                     }
                 }
             }

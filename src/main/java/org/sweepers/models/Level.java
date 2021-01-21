@@ -97,7 +97,7 @@ public class Level {
 
             // Blank cell clearer
             if ((level[y][x] instanceof Mineless && ((Mineless) level[y][x]).getNeighbors() == 0) && solveBlanks) {
-                List<Mineless> blanks = new ArrayList<>();
+                List<Mineless> checked = new ArrayList<>();
                 List<Mineless> unchecked = new ArrayList<>();
                 unchecked.add((Mineless) level[y][x]);
                 while (!unchecked.isEmpty()) {
@@ -106,17 +106,15 @@ public class Level {
                     unchecked.remove(0);
                     for (int i = Math.max(_y - 1, 0); i <= Math.min(_y + 1, height - 1); i++) {
                         for (int j = Math.max(_x - 1, 0); j <= Math.min(_x + 1, width - 1); j++) {
-                            if (!level[i][j].isFlagged() && !level[i][j].isRevealed() && !blanks.contains(level[i][j])) {
-                                blanks.add((Mineless) level[i][j]);
+                            if (!level[i][j].isFlagged() && !level[i][j].isRevealed() && !checked.contains(level[i][j])) {
+                                checked.add((Mineless) level[i][j]);
+                                onClick(((Mineless) level[i][j]).getX(), ((Mineless) level[i][j]).getY(), false);
                                 if (((Mineless) level[i][j]).getNeighbors() == 0) {
                                     unchecked.add((Mineless) level[i][j]);
                                 }
                             }
                         }
                     }
-                }
-                for (Mineless mineless : blanks) {
-                    onClick(mineless.getX(), mineless.getY(), false);
                 }
             }
 
@@ -154,8 +152,8 @@ public class Level {
 
     /**
      * Toggle the flag on a cell.
-     * @param the x-coordinate of the cell that's getting toggled
-     * @param the y-coordinate of the cell that's getting toggled
+     * @param x the x-coordinate of the cell that's getting toggled
+     * @param y the y-coordinate of the cell that's getting toggled
      */
     public void flag(int x, int y) {
         if (!level[y][x].isFlagged() && flagged.get() >= 9999 || level[y][x].isRevealed())
@@ -241,7 +239,6 @@ public class Level {
             }
         }
 
-        // TODO: Write test for this
         // Remove startPosition and fields around from valid spots
         for (int i = Math.max(startPosition.getValue() - 1, 0); i <= Math.min(startPosition.getValue() + 1,
                 height - 1); i++) {

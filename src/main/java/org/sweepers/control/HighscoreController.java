@@ -52,7 +52,7 @@ public class HighscoreController {
         // Create labels
         for (int i = 0; i < 5; i++) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Score.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Score.fxml"));
                 HBox label = loader.load();
                 ((Text) label.lookup("#txtNumber")).setText((i + 1) + ".");
                 labels[i] = label;

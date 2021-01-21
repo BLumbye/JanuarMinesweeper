@@ -4,12 +4,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.sweepers.Router;
 import org.sweepers.control.StartscreenController;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -19,10 +19,7 @@ import javafx.util.Pair;
 public class StartscreenTest {
     @Start
     void start(Stage stage) throws IOException {
-        StartscreenController startscreenController = new StartscreenController();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Startscreen.fxml"));
-        loader.setController(startscreenController);
-        Scene scene = new Scene(loader.load());
+        Scene scene = new Scene(Router.toStartscreen(getClass()));
 
         stage.setScene(scene);
         stage.show();

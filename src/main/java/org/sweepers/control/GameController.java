@@ -82,7 +82,7 @@ public class GameController {
         gameView.getClickable().addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
 
         initializeStatusBar();
-        gameAudio = new GameAudio();
+        gameAudio = GameAudio.getInstance();
     }
 
     private void start() {
@@ -217,7 +217,7 @@ public class GameController {
 
     private void openNewHighscore() {
         Stage dialog = new Stage();
-        dialog.setMinWidth(250);
+        dialog.setMinWidth(275);
         dialog.setMinHeight(380);
         dialog.setTitle("New Highscore");
         dialog.setScene(new Scene(Router.toNewHighscores(getClass(), level)));

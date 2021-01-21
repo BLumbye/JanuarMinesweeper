@@ -1,0 +1,57 @@
+@font-face {
+  font-family: 'Whacky_Joe';
+  src: url('/fonts/Whacky_Joe.ttf');
+}
+
+.title, .subtitle, Text, Button {
+  -fx-font-family: 'Whacky_Joe';
+  font-family: 'Whacky_Joe';
+}
+
+.title, .subtitle {
+  -fx-effect: dropshadow(gaussian, black, 10, 0, 0, 1);
+}
+
+.btnMain {
+  -fx-font-size: 12px;
+}
+
+.btnSide {
+  -fx-font-size: 12px;
+}
+
+.shadow {
+  -fx-effect: dropshadow(gaussian, black, 3, 0, 0, 1);
+}
+
+.panel {
+  -fx-background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0,0,0,0.2);
+  -fx-padding: 0 12px;
+  padding: 0 12px;
+  -fx-background-radius: 12px;
+  background-radius: 12px;
+}
+
+.button-marker {
+  visibility: hidden;
+}
+
+.selected .button-marker {
+  visibility: visible;
+}
+
+.win {
+  -fx-fill: linear-gradient(to bottom right, rgb(255,0,0) 10%, rgb(255, 166, 0) 20%, rgb(16,255,0) 30%, rgb(0,255,255) 50%, rgb(61,63,239) 64%, rgb(154,0,255) 77%, rgb(255,0,226) 85%, rgb(253,45,45) 100%);
+  fill: linear-gradient(to bottom right, rgb(255,0,0) 10%, rgb(255, 166, 0) 20%, rgb(16,255,0) 30%, rgb(0,255,255) 50%, rgb(61,63,239) 64%, rgb(154,0,255) 77%, rgb(255,0,226) 85%, rgb(253,45,45) 100%);
+}
+
+.lose {
+  -fx-fill: #FF0000;
+  fill: #FF0000;
+}
+
+.you Text {
+  -fx-fill: gold;
+  fill: gold;
+}
