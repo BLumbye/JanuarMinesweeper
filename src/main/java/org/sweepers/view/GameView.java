@@ -35,7 +35,6 @@ public class GameView {
 
     private Image flagImage, mineImage;
     private ZoomableScrollPane scrollPane;
-    private ImageView winGif;
 
     private Group container;
     private Group gCell, gOverlay, gGrid, gFlag, gMineSquares, gFlagSquares;
@@ -63,11 +62,6 @@ public class GameView {
     }
 
     private void createNodes(GridPane target) {
-        // Create win gif
-        // winGif = new ImageView(new Image("/confetti.gif"));
-        // winGif.setOpacity(0);
-        // winGif.setPickOnBounds(false);
-
         // Create groups
         gCell = new Group();
         gOverlay = new Group();
@@ -78,7 +72,11 @@ public class GameView {
         gFlagSquares = new Group();
         gFlagSquares.setOpacity(0);
 
-        container = new Group(gCell, gOverlay, gGrid, gFlag, gMineSquares, gFlagSquares);
+        // Create background
+        Rectangle bg = new Rectangle(0, 0, level.getWidth() * PREFFERED_CELL_SIZE, level.getHeight() * PREFFERED_CELL_SIZE);
+        bg.setFill(Color.rgb(210, 210, 210));
+
+        container = new Group(bg, gCell, gOverlay, gGrid, gFlag, gMineSquares, gFlagSquares);
 
         // Create outer nodes
         scrollPane = new ZoomableScrollPane(container);
@@ -87,7 +85,11 @@ public class GameView {
         scrollPane.getScaleValue().addListener(this::onZoom);
     }
 
-    public Group getClickableCanvas() {
+    /**
+     * Gets the container for all the groups, which will always receive the childrens' click events.
+     * @return a group that will receive all click events
+     */
+    public Group getClickable() {
         return container;
     }
 
@@ -259,12 +261,5 @@ public class GameView {
         gOverlay.setOpacity(0);
         mineSquaresActive = true;
         gMineSquares.setOpacity(1 - gFlag.getOpacity());
-    }
-
-    /**
-     * Plays the confetti gif.
-     */
-    public void playWinGif() {
-        winGif.setOpacity(1);
     }
 }

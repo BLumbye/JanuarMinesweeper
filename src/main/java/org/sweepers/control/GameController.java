@@ -79,12 +79,7 @@ public class GameController {
         });
         start();
 
-        gameView.getClickableCanvas().addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
-
-        // Disable panning with left and right mouse button
-        gameView.getClickableCanvas().addEventHandler(MouseEvent.ANY, event -> {
-            if (event.getButton() != MouseButton.MIDDLE) event.consume();
-        });
+        gameView.getClickable().addEventHandler(MouseEvent.MOUSE_CLICKED, this::mouseClicked);
 
         initializeStatusBar();
         gameAudio = new GameAudio();
@@ -180,7 +175,6 @@ public class GameController {
 
     private void win() {
         gameAudio.playWin();
-        // gameView.playWinGif();
         txtEnd.setText("You win!");
         txtEnd.getStyleClass().add("win");
         end();
