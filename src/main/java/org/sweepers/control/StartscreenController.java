@@ -5,9 +5,15 @@ import java.util.function.UnaryOperator;
 
 import org.sweepers.Router;
 import org.sweepers.models.Level;
+import org.sweepers.view.Animations;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -16,6 +22,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.converter.IntegerStringConverter;
 
@@ -51,6 +58,9 @@ public class StartscreenController {
     private Circle circle;
     @FXML
     private StackPane stackc;
+
+    @FXML
+    private Group grpTitle;
 
     private int width, height, mines;
     private double percentageMines;
@@ -109,9 +119,11 @@ public class StartscreenController {
 
         // Resize middle circle
         circle.radiusProperty().bind(stackc.heightProperty().multiply(0.4));
+
+        Animations.titleAnimation(grpTitle);
     }
 
-    public void sizeButton(String key, Button btn) {
+    private void sizeButton(String key, Button btn) {
         sizeSetting = key;
 
         if (key.equals("Custom")) {
@@ -129,7 +141,7 @@ public class StartscreenController {
         if (btn != null) btn.getStyleClass().add("selected");
     }
 
-    public void difficultyButton(String key, Button btn) {
+    private void difficultyButton(String key, Button btn) {
         difficultySetting = key;
 
         if (key.equals("Custom")) {
@@ -146,24 +158,24 @@ public class StartscreenController {
     }
 
     @FXML
-    public void startGame(ActionEvent event) {
+    private void startGame(ActionEvent event) {
         validateFields();
         Level level = new Level(width, height, mines, sizeSetting, difficultySetting);
         txtLaos.getScene().setRoot(Router.toGame(getClass(), level));
     }
 
     @FXML
-    public void quitGame(ActionEvent event) {
+    private void quitGame(ActionEvent event) {
         Stage stage = (Stage) txtLaos.getScene().getWindow();
         stage.close();
     }
 
     @FXML
-    public void highscores(ActionEvent event) {
+    private void highscores(ActionEvent event) {
         txtLaos.getScene().setRoot(Router.toHighscores(getClass()));
     }
 
-    public void validateFields() {
+    private void validateFields() {
         // Validate width
         int widthVal = clamp(Integer.parseInt(fieldWidth.getText()), 4, 100);
         fieldWidth.setText(String.valueOf(widthVal));
@@ -194,7 +206,7 @@ public class StartscreenController {
         fieldMines.setDisable(true);
     }
 
-    public void updateMines() {
+    private void updateMines() {
         if (fieldMines.isDisable()) {
             mines = (int) Math.round(width * height * percentageMines);
             fieldMines.setText(String.valueOf(mines));

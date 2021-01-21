@@ -108,7 +108,7 @@ public class GameController {
             long minutes = elapsedTime / 1000 / 60;
             long seconds = (elapsedTime / 1000) % 60;
             txtTimer.setText(String.format("%d:%02d", minutes, seconds));
-        }), new KeyFrame(Duration.millis(10)));
+        }), new KeyFrame(Duration.millis(250)));
         timerTimeline.setCycleCount(Animation.INDEFINITE);
         timerTimeline.play();
     }

@@ -7,10 +7,12 @@ import java.util.List;
 import org.sweepers.Highscores;
 import org.sweepers.Router;
 import org.sweepers.models.Highscore;
+import org.sweepers.view.Animations;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -31,6 +33,9 @@ public class HighscoreController {
     private Circle circle;
     @FXML
     private StackPane stackc;
+
+    @FXML
+    private Group grpTitle;
 
     HBox[] labels;
 
@@ -66,6 +71,8 @@ public class HighscoreController {
 
         // Resize middle circle
         circle.radiusProperty().bind(stackc.heightProperty().multiply(0.4));
+
+        Animations.titleAnimation(grpTitle);
     }
 
     @FXML

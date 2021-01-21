@@ -27,16 +27,20 @@
    <children>
       <VBox alignment="CENTER" prefHeight="100.0" spacing="4.0" style="-fx-background-color: #ce1126;">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="MineSweeper">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Text>
-            <Text fill="WHITE" layoutX="216.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitle" text="Highscores">
-               <font>
-                  <Font name="System Bold Italic" size="12.0" />
-               </font>
-            </Text>
+            <Group fx:id="grpTitle">
+               <children>
+                  <Text boundsType="VISUAL" fill="WHITE" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="MineSweeper">
+                     <font>
+                        <Font name="Whacky_Joe Regular" size="24.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="txtLaos" boundsType="VISUAL" fill="WHITE" layoutX="54.0" layoutY="28.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitle" text="Highscores">
+                     <font>
+                        <Font name="Whacky_Joe Regular" size="12.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Group>
          </children>
       </VBox>
       <StackPane fx:id="stackc" style="-fx-background-color: #002868;" GridPane.rowIndex="1">
