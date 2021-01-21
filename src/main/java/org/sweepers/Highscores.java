@@ -16,8 +16,10 @@ public class Highscores {
     private static Highscores instance = null;
 
     private Map<String, List<Highscore>> scores;
+
     private final String DIRECTORY = System.getProperty("user.home") + File.separator + ".laossweeper" + File.separator;
     public final int MAX_NAME_LENGTH = 4;
+    public final char SEPARATOR = ':';
 
     public Highscores() {
         scores = new HashMap<>();
@@ -37,12 +39,11 @@ public class Highscores {
                 while (scanner.hasNextLine()) {
                     // line[0] = navn
                     // line[1] = tid
-                    String[] line = scanner.nextLine().split(":");
+                    String[] line = scanner.nextLine().split(String.valueOf(SEPARATOR));
                     try {
-                        if (line[0].length() > MAX_NAME_LENGTH) throw new IOException("Highscore is ill formatted.");
+                        if (line.length != 2 || line[0].length() > MAX_NAME_LENGTH || !line[0].matches("[a-zA-Z0-9_.-]{0,4}")) throw new IOException("Highscore is ill formatted.");
                         list.add(new Highscore(line[0], Long.parseLong(line[1])));
                     } catch (Exception e) {
-                        e.printStackTrace();
                         continue;
                     }
                 }
@@ -71,11 +72,9 @@ public class Highscores {
         scores.forEach((key, value) -> {
             try {
                 FileWriter file = new FileWriter(DIRECTORY + key);
-                String s = "";
-                for (Highscore highscore : value) {
-                    s += highscore.name + ":" + highscore.time + "\n";
-                }
-                file.write(s);
+                StringBuilder sb = new StringBuilder();
+                value.forEach(hs -> sb.append(hs.name).append(SEPARATOR).append(hs.time).append('\n'));
+                file.write(sb.toString());
                 file.close();
             } catch (IOException e) {
                 e.printStackTrace();

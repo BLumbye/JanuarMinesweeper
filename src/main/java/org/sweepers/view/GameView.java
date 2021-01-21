@@ -206,8 +206,7 @@ public class GameView {
      * @param y the y index of the cell
      */
     public void revealCell(int x, int y) {
-        gOverlay.getChildren().remove(overlays[x][y]);
-        overlays[x][y] = null;
+        overlays[x][y].setVisible(false);
     }
 
     /**
@@ -251,7 +250,7 @@ public class GameView {
      * Clears the whole overlay.
      */
     public void revealAll() {
-        gOverlay.setOpacity(0);
+        gOverlay.setVisible(false);
         mineSquaresActive = true;
         gMineSquares.setOpacity(1 - gFlag.getOpacity());
     }

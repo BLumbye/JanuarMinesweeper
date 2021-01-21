@@ -4,11 +4,15 @@ import org.sweepers.view.GameAudio;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
+        // Load font
+        Font.loadFont(getClass().getResourceAsStream("/fonts/Whacky_Joe.ttf"), 12);
+
         // Start music!
         GameAudio.getInstance();
 

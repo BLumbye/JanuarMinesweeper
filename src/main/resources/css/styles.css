@@ -1,8 +1,3 @@
-@font-face {
-  font-family: 'Whacky_Joe';
-  src: url('/fonts/Whacky_Joe.ttf');
-}
-
 .title, .subtitle, Text, Button {
   -fx-font-family: 'Whacky_Joe';
   font-family: 'Whacky_Joe';
