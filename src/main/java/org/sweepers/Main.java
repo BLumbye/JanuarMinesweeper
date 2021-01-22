@@ -4,6 +4,7 @@ import org.sweepers.view.GameAudio;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -18,6 +19,9 @@ public class Main extends Application {
 
         // Start music!
         GameAudio.getInstance();
+
+        // Add icon
+        stage.getIcons().add(new Image("/sprites/bomb-outline.png"));
 
         // Set up stage
         stage.setTitle("Minesweeper");

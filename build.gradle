@@ -40,7 +40,7 @@ testResultsDirName = "$buildDir/my-test-results"
 test {
     useJUnitPlatform() {
         // includeTags 'Sick'
-        excludeTags 'Slow'
+        // excludeTags 'Slow'
     }
 }
 
