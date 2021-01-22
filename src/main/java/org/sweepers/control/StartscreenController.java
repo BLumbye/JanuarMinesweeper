@@ -203,7 +203,7 @@ public class StartscreenController {
 
     private void updateMines() {
         if (fieldMines.isDisable()) {
-            mines = (int) Math.round(width * height * percentageMines);
+            mines = clamp((int) Math.round(width * height * percentageMines), 1, width * height - 10);
             fieldMines.setText(String.valueOf(mines));
         } else {
             int val = clamp(Integer.parseInt(fieldMines.getText()), 1, width * height - 10);

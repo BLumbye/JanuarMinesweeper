@@ -58,6 +58,7 @@ jar {
         attributes 'Main-Class': 'org.sweepers.Launcher'
     }
     from {
+        sourceSets.main.allSource
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
