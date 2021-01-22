@@ -27,7 +27,7 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 
 /**
- * The controller handling the game part
+ * The controller handling the game part.
  */
 public class GameController {
     @FXML
@@ -62,6 +62,9 @@ public class GameController {
     private int cellSize;
     private Timeline timerTimeline;
 
+    /**
+     * @param level the level that should be played
+     */
     public GameController(Level level) {
         this.level = level;
     }
@@ -98,7 +101,7 @@ public class GameController {
         txtMines.textProperty().bind(level.getMines().asString());
 
         btnRestart.setOnAction(event -> {
-            btnRestart.getScene().setRoot(Router.toStartscreen(getClass()));
+            btnRestart.getScene().setRoot(Router.toStartscreen());
         });
     }
 
@@ -118,32 +121,33 @@ public class GameController {
     }
 
     @FXML
-    public void zoomIn() {
+    private void zoomIn() {
         gameView.zoom(0.2);
     }
 
     @FXML
-    public void zoomOut() {
+    private void zoomOut() {
         gameView.zoom(-0.2);
     }
 
     private void mouseClicked(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
-            leftMouseClicked(event);
-        } else if (event.getButton() == MouseButton.SECONDARY) {
-            rightMouseClicked(event);
-        }
-    }
-
-    private void leftMouseClicked(MouseEvent event) {
         if (!level.isInProgress())
             return;
 
+        // Calculate the clicked cell
         double mouseX = event.getX();
         double mouseY = event.getY();
         int x = Math.floorDiv((int) mouseX, cellSize);
         int y = Math.floorDiv((int) mouseY, cellSize);
 
+        if (event.getButton() == MouseButton.PRIMARY) {
+            leftMouseClicked(x, y);
+        } else if (event.getButton() == MouseButton.SECONDARY) {
+            rightMouseClicked(x, y);
+        }
+    }
+
+    private void leftMouseClicked(int x, int y) {
         if (!level.isInitialized().get()) {
             level.generateLevel(new Pair<Integer, Integer>(x, y));
         }
@@ -157,15 +161,7 @@ public class GameController {
         }
     }
 
-    private void rightMouseClicked(MouseEvent event) {
-        if (!level.isInProgress())
-            return;
-
-        double mouseX = event.getX();
-        double mouseY = event.getY();
-        int x = Math.floorDiv((int) mouseX, cellSize);
-        int y = Math.floorDiv((int) mouseY, cellSize);
-
+    private void rightMouseClicked(int x, int y) {
         if (!level.isInitialized().get()) {
             level.generateLevel();
         }
@@ -202,14 +198,11 @@ public class GameController {
         try {
             List<Highscore> scores = Highscores.getInstance()
                     .getHighscore(level.getSizeSetting() + "_" + level.getDifficultySetting());
-            return (scores.size() < 5
-                    || level.getTotalTime() < scores.get(scores.size() - 1).time)
-                    && level.getSizeSetting() != null
-                    && level.getSizeSetting() != "Custom"
-                    && level.getDifficultySetting() != null
-                    && level.getDifficultySetting() != "Custom"
+            return (scores.size() < 5 || level.getTotalTime() < scores.get(scores.size() - 1).time)
+                    && level.getSizeSetting() != null && level.getSizeSetting() != "Custom"
+                    && level.getDifficultySetting() != null && level.getDifficultySetting() != "Custom"
                     && level.getDifficultySetting() != "Laos";
-        } catch (FileNotFoundException e) {   
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
         }
@@ -220,7 +213,7 @@ public class GameController {
         dialog.setMinWidth(275);
         dialog.setMinHeight(380);
         dialog.setTitle("New Highscore");
-        dialog.setScene(new Scene(Router.toNewHighscores(getClass(), level)));
+        dialog.setScene(new Scene(Router.toNewHighscores(level)));
         dialog.initOwner(btnRestart.getScene().getWindow());
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.show();

@@ -23,7 +23,7 @@ public class DisplayTest {
     private void start(Stage stage) throws IOException {
         level = new Level(9, 9, 1, null, null);
         level.generateTestLevel(createTestLevel());
-        Scene scene = new Scene(Router.toGame(getClass(), level));
+        Scene scene = new Scene(Router.toGame(level));
         stage.setScene(scene);
         stage.show();
     }

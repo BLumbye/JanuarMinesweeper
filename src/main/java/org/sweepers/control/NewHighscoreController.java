@@ -20,6 +20,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * The controller handling the new high score popup.
+ */
 public class NewHighscoreController {
     @FXML
     private TextField fieldName;
@@ -27,17 +30,19 @@ public class NewHighscoreController {
     @FXML
     private VBox boxScores;
 
-    Level level;
+    private Level level;
+    private Highscores highscores;
 
-    Highscores highscores;
-
+    /**
+     * @param level the level with the data for the high score
+     */
     public NewHighscoreController(Level level) {
         this.level = level;
         highscores = Highscores.getInstance();
     }
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         // Create labels
         try {
             List<Highscore> scores = new ArrayList<>(
@@ -55,6 +60,8 @@ public class NewHighscoreController {
                 if (scores.size() > i) {
                     Highscore score = scores.get(i);
                     ((Text) label.lookup("#txtName")).setText(score.name);
+
+                    // Calculate the time in minutes and seconds
                     long minutes = score.time / 1000 / 60;
                     long seconds = (score.time / 1000) % 60;
                     ((Text) label.lookup("#txtTime")).setText(String.format("%d:%02d", minutes, seconds));
@@ -85,13 +92,13 @@ public class NewHighscoreController {
     }
 
     @FXML
-    public void cancel() {
+    private void cancel() {
         Stage stage = (Stage) fieldName.getScene().getWindow();
         stage.close();
     }
 
     @FXML
-    public void save() {
+    private void save() {
         try {
             highscores.setHighscore(level.getSizeSetting() + "_" + level.getDifficultySetting(),
                     new Highscore(fieldName.getText(), level.getTotalTime()));

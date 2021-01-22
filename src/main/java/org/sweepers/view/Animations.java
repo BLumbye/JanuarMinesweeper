@@ -7,9 +7,13 @@ import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.util.Duration;
 
+/**
+ * A helper class serving some of the animations the program uses.
+ */
 public class Animations {
     /**
      * An animation that scales and rotates the target indefinetely.
+     * 
      * @param target the node to animate
      */
     public static void titleAnimation(Node target) {
@@ -33,7 +37,6 @@ public class Animations {
         final KeyValue kvRotate3 = new KeyValue(target.rotateProperty(), 7, Interpolator.EASE_BOTH);
         final KeyFrame kf3 = new KeyFrame(Duration.millis(4000), kvScaleX3, kvScaleY3, kvRotate3);
 
-        
         timeline.getKeyFrames().addAll(kf1, kf2, kf3);
         timeline.play();
     }

@@ -7,6 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * Starts the minesweeper - laos edition game.
+ */
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -22,7 +25,7 @@ public class Main extends Application {
         stage.setMinHeight(425);
         stage.setWidth(650);
         stage.setHeight(500);
-        stage.setScene(new Scene(Router.toStartscreen(getClass())));
+        stage.setScene(new Scene(Router.toStartscreen()));
         stage.show();
     }
 
@@ -31,6 +34,10 @@ public class Main extends Application {
         Highscores.getInstance().saveHighscores();
     }
 
+    /**
+     * Just calls the launch - which in turn calls the start function
+     * @param args not used
+     */
     public static void main(String[] args) {
         launch(args);
     }

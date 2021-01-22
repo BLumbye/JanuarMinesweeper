@@ -13,8 +13,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 /**
+ * <p>
+ * A new component based on a ScrollPane, but allowing the user to zoom with the
+ * scroll wheel.
+ * </p>
+ * <p>
  * Class originally from https://stackoverflow.com/a/44314455.
+ * </p>
+ * <p>
  * Modified to fit the minesweeper program.
+ * </p>
  */
 public class ZoomableScrollPane extends ScrollPane {
     private DoubleProperty scaleValue = new SimpleDoubleProperty(0.8);
@@ -22,6 +30,9 @@ public class ZoomableScrollPane extends ScrollPane {
     private Group target;
     private Group zoomNode;
 
+    /**
+     * @param target the node that should be inside the zoomable scroll pane
+     */
     public ZoomableScrollPane(Group target) {
         super();
         this.target = target;
@@ -29,12 +40,13 @@ public class ZoomableScrollPane extends ScrollPane {
         setContent(outerNode(zoomNode));
 
         setPannable(true);
-        setFitToHeight(true); //center
-        setFitToWidth(true); //center
+        setFitToHeight(true); // center
+        setFitToWidth(true); // center
 
         // Disable pan with left and right mouse button
         zoomNode.addEventHandler(MouseEvent.ANY, event -> {
-            if (event.getButton() != MouseButton.MIDDLE) event.consume();
+            if (event.getButton() != MouseButton.MIDDLE)
+                event.consume();
         });
 
         // Update scale on resize
@@ -42,10 +54,18 @@ public class ZoomableScrollPane extends ScrollPane {
         heightProperty().addListener((obs, oldVal, newVal) -> updateScale(scaleValue.get()));
     }
 
+    /**
+     * Zoom in or out out.
+     * 
+     * @param difference the number to add to the scale
+     */
     public void zoom(double difference) {
         updateScale(scaleValue.get() + difference);
     }
 
+    /**
+     * @return the scale value property.
+     */
     public DoubleProperty getScaleValue() {
         return scaleValue;
     }
@@ -92,13 +112,14 @@ public class ZoomableScrollPane extends ScrollPane {
         double oldScale = scaleValue.get();
         if (updateScale(scaleValue.get() * zoomFactor)) {
             this.layout(); // refresh ScrollPane scroll positions & target bounds
-    
+
             // convert target coordinates to zoomTarget coordinates
             Point2D posInZoomTarget = target.parentToLocal(zoomNode.parentToLocal(mousePoint));
-    
+
             // calculate adjustment of scroll position (pixels)
-            Point2D adjustment = target.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(scaleValue.get() / oldScale - 1));
-    
+            Point2D adjustment = target.getLocalToParentTransform()
+                    .deltaTransform(posInZoomTarget.multiply(scaleValue.get() / oldScale - 1));
+
             // convert back to [0, 1] range
             // (too large/small values are automatically corrected by ScrollPane)
             Bounds updatedInnerBounds = zoomNode.getBoundsInLocal();

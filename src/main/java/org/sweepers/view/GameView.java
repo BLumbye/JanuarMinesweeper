@@ -19,9 +19,10 @@ import javafx.scene.shape.Rectangle;
  * This class visualizes the game itself
  */
 public class GameView {
+    /** The side length of all the cells. */
     public static final int PREFFERED_CELL_SIZE = 32;
 
-    public Image[] numbers;
+    private Image[] numbers;
 
     private Rectangle[][] overlays;
     private ImageView[][] flags;
@@ -35,8 +36,13 @@ public class GameView {
 
     private Level level;
 
-    boolean mineSquaresActive = false;
+    private boolean mineSquaresActive = false;
 
+    /**
+     * Creates a new instance of the class - also creates all the nodes
+     * @param level the level that should be drawn
+     * @param target the node that the level should be ind
+     */
     public GameView(Level level, GridPane target) {
         this.level = level;
 
@@ -70,7 +76,8 @@ public class GameView {
         gFlagSquares.setOpacity(0);
 
         // Create background
-        Rectangle bg = new Rectangle(0, 0, level.getWidth() * PREFFERED_CELL_SIZE, level.getHeight() * PREFFERED_CELL_SIZE);
+        Rectangle bg = new Rectangle(0, 0, level.getWidth() * PREFFERED_CELL_SIZE,
+                level.getHeight() * PREFFERED_CELL_SIZE);
         bg.setFill(Color.rgb(210, 210, 210));
 
         container = new Group(bg, gCell, gOverlay, gGrid, gFlag, gMineSquares, gFlagSquares);
@@ -83,7 +90,9 @@ public class GameView {
     }
 
     /**
-     * Gets the container for all the groups, which will always receive the childrens' click events.
+     * Gets the container for all the groups, which will always receive the
+     * childrens' click events.
+     * 
      * @return a group that will receive all click events
      */
     public Group getClickable() {
@@ -115,8 +124,6 @@ public class GameView {
 
     /**
      * Draws the content of all the cells.
-     * 
-     * @param cells the 2D array of cells
      */
     public void drawCells() {
         Cell[][] cells = level.getLevel();
@@ -184,6 +191,9 @@ public class GameView {
 
     /**
      * Automatically gets called when a cell is updated.
+     * 
+     * @param oldCell the cell before the update
+     * @param newCell the cell after the update
      */
     public void onCellUpdate(Cell oldCell, Cell newCell) {
         if (!oldCell.isRevealed() && newCell.isRevealed()) {

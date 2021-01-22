@@ -21,6 +21,10 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.util.converter.IntegerStringConverter;
 
+/**
+ * The controller handling the start screen and the settings on the start
+ * screen.
+ */
 public class StartscreenController {
     @FXML
     private Button btnSizeSmall;
@@ -63,12 +67,21 @@ public class StartscreenController {
     private String sizeSetting;
     private String difficultySetting;
 
+    /**
+     * All of the predefined level sizes.
+     * <p>
+     * Value is a pair with width as key, and height as value.
+     * </p>
+     */
     public static final Map<String,Pair<Integer,Integer>> SIZES = Map.of(
         "Small", new Pair<Integer,Integer>(9,9),
         "Medium", new Pair<Integer,Integer>(16,16),
         "Large", new Pair<Integer,Integer>(30,16)
     );
 
+    /**
+     * All of the percentages of the predefined difficulties.
+     */
     public static final Map<String,Double> DIFFICULTIES = Map.of(
         "Easy", 10.0 / (9 * 9),
         "Medium", 40.0 / (16 * 16),
@@ -77,7 +90,7 @@ public class StartscreenController {
     );
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         // Set standard values: small - easy
         sizeButton("Small", btnSizeSmall);
         difficultyButton("Easy", btnDifficultyEasy);
@@ -118,6 +131,12 @@ public class StartscreenController {
         Animations.titleAnimation(grpTitle);
     }
 
+    /**
+     * Changes the size and styles the buttons according to the parameters.
+     * 
+     * @param key the key for the setting, formatted as "Size_Difficulty"
+     * @param btn the btn that was clicked
+     */
     private void sizeButton(String key, Button btn) {
         sizeSetting = key;
 
@@ -125,7 +144,7 @@ public class StartscreenController {
             fieldHeight.setDisable(false);
             fieldWidth.setDisable(false);
         } else {
-            Pair<Integer,Integer> size = SIZES.get(key);
+            Pair<Integer, Integer> size = SIZES.get(key);
             setSize(size.getKey(), size.getValue());
         }
 
@@ -133,9 +152,16 @@ public class StartscreenController {
         btnSizeMedium.getStyleClass().remove("selected");
         btnSizeLarge.getStyleClass().remove("selected");
         btnSizeCustom.getStyleClass().remove("selected");
-        if (btn != null) btn.getStyleClass().add("selected");
+        if (btn != null)
+            btn.getStyleClass().add("selected");
     }
 
+    /**
+     * Changes the difficulty and styles the buttons according to the parameters.
+     * 
+     * @param key the key for the setting, formatted as "Size_Difficulty"
+     * @param btn the btn that was clicked
+     */
     private void difficultyButton(String key, Button btn) {
         difficultySetting = key;
 
@@ -149,14 +175,15 @@ public class StartscreenController {
         btnDifficultyMedium.getStyleClass().remove("selected");
         btnDifficultyHard.getStyleClass().remove("selected");
         btnDifficultyCustom.getStyleClass().remove("selected");
-        if (btn != null) btn.getStyleClass().add("selected");
+        if (btn != null)
+            btn.getStyleClass().add("selected");
     }
 
     @FXML
     private void startGame(ActionEvent event) {
         validateFields();
         Level level = new Level(height, width, mines, sizeSetting, difficultySetting);
-        txtLaos.getScene().setRoot(Router.toGame(getClass(), level));
+        txtLaos.getScene().setRoot(Router.toGame(level));
     }
 
     @FXML
@@ -167,7 +194,7 @@ public class StartscreenController {
 
     @FXML
     private void highscores(ActionEvent event) {
-        txtLaos.getScene().setRoot(Router.toHighscores(getClass()));
+        txtLaos.getScene().setRoot(Router.toHighscores());
     }
 
     private void validateFields() {
@@ -185,22 +212,29 @@ public class StartscreenController {
         updateMines();
     }
 
-    public void setSize(int width, int height) {
+    private void setSize(int width, int height) {
         this.width = width;
         this.height = height;
         updateMines();
+
+        // Disable the text fields
         fieldWidth.setDisable(true);
         fieldWidth.setText(String.valueOf(width));
         fieldHeight.setDisable(true);
         fieldHeight.setText(String.valueOf(height));
     }
 
-    public void setDifficulty(double percentage) {
+    private void setDifficulty(double percentage) {
         percentageMines = percentage;
         updateMines();
+
+        // Disable the text field
         fieldMines.setDisable(true);
     }
 
+    /**
+     * Either calculates mines based on the selected percentage, or clamps the text field for the mines.
+     */
     private void updateMines() {
         if (fieldMines.isDisable()) {
             mines = clamp((int) Math.round(width * height * percentageMines), 1, width * height - 10);

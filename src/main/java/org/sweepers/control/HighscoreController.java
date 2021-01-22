@@ -20,6 +20,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+/**
+ * The controller handling the high score menu.
+ */
 public class HighscoreController {
     @FXML
     private ComboBox<String> comboSize;
@@ -41,13 +44,14 @@ public class HighscoreController {
 
     Highscores highscores;
 
+    /** */
     public HighscoreController() {
         labels = new HBox[5];
         highscores = Highscores.getInstance();
     }
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         // Populate and set combo boxes
         comboSize.getItems().addAll("Small", "Medium", "Large");
         comboSize.getSelectionModel().select("Small");
@@ -87,6 +91,8 @@ public class HighscoreController {
                 if (scores.size() > i) {
                     Highscore score = scores.get(i);
                     ((Text) label.lookup("#txtName")).setText(score.name);
+
+                    // Calculate the time in minutes and seconds
                     long minutes = score.time / 1000 / 60;
                     long seconds = (score.time / 1000) % 60;
                     ((Text) label.lookup("#txtTime")).setText(String.format("%d:%02d", minutes, seconds));
@@ -101,7 +107,8 @@ public class HighscoreController {
     }
 
     @FXML
-    public void back() {
-        boxScores.getScene().setRoot(Router.toStartscreen(getClass()));
+    private void back() {
+        // Return to the start screen
+        boxScores.getScene().setRoot(Router.toStartscreen());
     }
 }

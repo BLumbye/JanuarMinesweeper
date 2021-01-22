@@ -19,7 +19,7 @@ import javafx.util.Pair;
 public class StartscreenTest {
     @Start
     void start(Stage stage) throws IOException {
-        Scene scene = new Scene(Router.toStartscreen(getClass()));
+        Scene scene = new Scene(Router.toStartscreen());
 
         stage.setScene(scene);
         stage.show();
