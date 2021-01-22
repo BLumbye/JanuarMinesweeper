@@ -160,8 +160,6 @@ public class GameView {
                 Rectangle rect = new Rectangle(x * PREFFERED_CELL_SIZE, y * PREFFERED_CELL_SIZE, PREFFERED_CELL_SIZE,
                         PREFFERED_CELL_SIZE);
                 rect.setFill(Color.GRAY);
-                rect.setStroke(Color.GRAY);
-                rect.setStrokeWidth(1);
                 overlays[x][y] = rect;
                 gOverlay.getChildren().add(rect);
             }

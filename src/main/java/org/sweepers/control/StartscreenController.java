@@ -155,7 +155,7 @@ public class StartscreenController {
     @FXML
     private void startGame(ActionEvent event) {
         validateFields();
-        Level level = new Level(width, height, mines, sizeSetting, difficultySetting);
+        Level level = new Level(height, width, mines, sizeSetting, difficultySetting);
         txtLaos.getScene().setRoot(Router.toGame(getClass(), level));
     }
 
