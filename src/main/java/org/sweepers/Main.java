@@ -18,7 +18,7 @@ public class Main extends Application {
 
         // Set up stage
         stage.setTitle("Minesweeper");
-        stage.setMinWidth(475);
+        stage.setMinWidth(550);
         stage.setMinHeight(425);
         stage.setWidth(650);
         stage.setHeight(500);

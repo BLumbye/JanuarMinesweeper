@@ -54,7 +54,7 @@
             </Group>
             <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="32.0">
                <children>
-                  <VBox alignment="CENTER" layoutX="178.0" layoutY="10.0" maxHeight="-Infinity" prefHeight="200.0" prefWidth="100.0" spacing="8.0" styleClass="panel">
+                  <VBox alignment="CENTER" layoutX="178.0" layoutY="10.0" maxHeight="-Infinity" prefHeight="200.0" prefWidth="150.0" spacing="8.0" styleClass="panel">
                      <children>
                         <Text boundsType="VISUAL" fill="WHITE" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="shadow" text="Size">
                            <font>
@@ -147,7 +147,7 @@
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="200.0" prefWidth="100.0" spacing="8.0" styleClass="panel">
+                  <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="200.0" prefWidth="150.0" spacing="8.0" styleClass="panel">
                      <children>
                         <Text boundsType="VISUAL" fill="WHITE" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="shadow" text="Difficulty">
                            <font>
@@ -240,7 +240,7 @@
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="200.0" prefWidth="100.0" rotate="-60.3" spacing="8.0" styleClass="panel" HBox.hgrow="NEVER">
+                  <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="200.0" prefWidth="150.0" rotate="-60.3" spacing="8.0" styleClass="panel" HBox.hgrow="NEVER">
                      <children>
                         <VBox alignment="CENTER" spacing="5.0">
                            <children>
